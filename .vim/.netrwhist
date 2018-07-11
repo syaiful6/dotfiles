@@ -1,6 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =4
-let g:netrw_dirhist_1='/d/repository/jonggrang'
-let g:netrw_dirhist_2='/d/repository/jonggrang/packages'
-let g:netrw_dirhist_3='/d/repository/jonggrang/packages/async'
-let g:netrw_dirhist_4='/d/repository/jonggrang/packages/async/src'
