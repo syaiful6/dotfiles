@@ -18,11 +18,11 @@ if has("gui_running")
   set guioptions-=T
   set guioptions-=m
   set guioptions-=e
-  set background=dark
 endif
 
-" -- general settings --
-colorscheme badwolf
+" -- general settings, set terminal background to RGB (0, 43, 54)
+set background=dark
+colorscheme solarized 
 syntax enable " enable syntax processing
 set showcmd " show command in bottom bar
 set number " show line numbers
@@ -99,6 +99,19 @@ set sidescrolloff=5
 if exists('&colorcolumn')
   set colorcolumn=80
 endif
+
+if (has("nvim"))
+  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+
+" For neovim > 0.1.5
+if (has("termguicolors"))
+  set termguicolors
+endif
+
+" netrw settings
+let g:netrw_list_hide = '.*\.pyc'
 
 " Folding
 set foldenable
