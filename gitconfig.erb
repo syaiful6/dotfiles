@@ -1,0 +1,30 @@
+[user]
+    name = <%= DotfilesConfig['git_username'] %>
+    email = <%= DotfilesConfig['git_email'] %>
+[alias]
+    co = checkout
+    st = status
+    ci = commit
+    rm-submodule = "!f(){ git rm -rf \"$1\";git config -f .gitmodules --remove-section \"submodule.$1\";git config -f .git/config --remove-section \"submodule.$1\";git add .gitmodules; }; f"
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+[core]
+    excludesfile = ~/.gitignore
+    editor = vim
+    autocrlf = input
+[pull]
+    rebase = true
+[push]
+    default = current
+[format]
+    pretty = %C(yellow)%h%Creset %s %C(red)(%an, %cr)%Creset
+[github]
+    user = <%= DotfilesConfig['github_username'] %>
+[web]
+    browser = chromium-browser
+<% if (helper = DotfilesConfig['git_credential_helper']) %>
+[credential]
+    helper = <%= helper %>
+<% end %>
