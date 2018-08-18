@@ -15,7 +15,7 @@ def initialize_uninitialized_submodules
     `git submodule status`.split("\n").each do |line|
         # if the first char is '-', the submodule needs to be initialized
         if line[0] == '-'
-            puts "nitializing submodules..."
+            puts "initializing submodules..."
             system "git submodule update --init"
             return
         end
