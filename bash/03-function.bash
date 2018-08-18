@@ -60,7 +60,7 @@ dotfile-has() {
 
 # generate random password/key
 gen-pswd() {
-    if dotfile_has "pwgen"; then
+    if dotfile-has "pwgen"; then
         # we have pwgen use it
         command pwgen -ysB $1
     else
