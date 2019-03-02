@@ -70,6 +70,11 @@ if has("autocmd")
     au FileType make set noexpandtab
     au FileType gitcommit set tw=72 colorcolumn=73
     au FileType markdown set tw=0
+
+    au FileType go set noexpandtab
+    au FileType go set shiftwidth=4
+    au FileType go set softtabstop=4
+    au FileType go set tabstop=4
   augroup END
 endif
 
