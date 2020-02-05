@@ -1,8 +1,4 @@
-# vagrant
-alias vup="vagrant up"
-alias vhalt="vagrant halt"
-alias vssh="vagrant ssh"
+alias docomp='docker run --rm --interactive --tty --volume "$PWD":/app composer'
 
-# ruby
-alias bexcke="bundle exec rake"
-alias bexc="bundle exec"
+# alias for tmux
+tmux="TERM=screen-256color-bce tmux"

@@ -28,6 +28,27 @@ sanitise-filename() {
     echo -n "$1" | tr -c -s 'a-zA-Z0-9.-' '-'
 }
 
+trim-file-prefix() {
+    echo -n "$1" | cut -c13-
+}
+
+trim-files-prefix() {
+    local exitcode=0
+    local sanitised
+    for file in $*; do
+        sanitised=$(trim-file-prefix "$file")
+
+        [ "$sanitised" = "$file" ] && continue
+
+        if [ -f "$sanitised" ]; then
+            echo >&2 "$0: can't rename $file, $sanitised already exists"
+            exitcode=1
+        else
+            mv -- "$file" "$sanitised"
+        fi
+    done
+}
+
 # Wrapper around sanitise-filename which takes a list of files and renames them
 # for you. Example use:
 #
