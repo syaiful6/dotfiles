@@ -6,20 +6,8 @@ require 'rbconfig'
 
 
 def install_dotfiles
-    initialize_uninitialized_submodules
     load_configuration
     copy_dotfiles
-end
-
-def initialize_uninitialized_submodules
-    `git submodule status`.split("\n").each do |line|
-        # if the first char is '-', the submodule needs to be initialized
-        if line[0] == '-'
-            puts "initializing submodules..."
-            system "git submodule update --init"
-            return
-        end
-    end
 end
 
 def load_configuration

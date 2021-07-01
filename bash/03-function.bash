@@ -29,7 +29,7 @@ sanitise-filename() {
 }
 
 trim-file-prefix() {
-    echo -n "$1" | cut -c13-
+    echo -n "$1" | cut -c18-
 }
 
 trim-files-prefix() {
@@ -110,4 +110,8 @@ add-path() {
             fi
         fi
     done
+}
+
+se_download_html() {
+    command curl http://95.217.135.107/media/serp_html/${1}.html -L --output ${1}.html
 }

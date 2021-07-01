@@ -3,7 +3,22 @@ set nocompatible
 " don't use 'conceal in rust
 let g:no_rust_conceal=1
 
-silent! call pathogen#infect()
+call plug#begin('~/.vim/plugged')
+
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'morhetz/gruvbox'
+Plug 'overcache/NeoSolarized'
+Plug 'dense-analysis/ale'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'sgur/vim-editorconfig'
+Plug 'itchyny/lightline.vim'
+
+" Initialize plugin system
+call plug#end()
 
 if has("gui_running")
   if has("win32")
@@ -20,9 +35,42 @@ if has("gui_running")
   set guioptions-=e
 endif
 
+if has("termguicolors")
+  set termguicolors
+endif
+
+" -- ale configuration
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+let g:ale_fix_on_save = 1
+
+let g:ale_fixers = {
+\   'python': ['black'],
+\}
+
+" fzf fuzzy finder
+let g:fzf_action = {
+\ 'ctrl-t': 'tab split',
+\ 'ctrl-s': 'split',
+\ 'ctrl-v': 'vsplit'
+\}
+
+
+" Lightline
+let g:lightline = {
+  \     'colorscheme': 'wombat',
+  \     'active': {
+  \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'modified']],
+  \         'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
+  \     }
+  \ }
+
+
 " -- general settings, set terminal background to RGB (0, 43, 54)
 set background=dark
-colorscheme solarized 
+" colorscheme NeoSolarized
+colorscheme gruvbox
+
 syntax enable " enable syntax processing
 set showcmd " show command in bottom bar
 set number " show line numbers
@@ -38,6 +86,9 @@ set softtabstop=2 " number of spaces in tab
 set shiftwidth=2
 
 set autoindent
+
+" fzf
+set rtp+='/opt/homebrew/bin/fzf'
 
 " bash like tab completion
 set wildmenu
@@ -116,7 +167,7 @@ if (has("termguicolors"))
 endif
 
 " netrw settings
-let g:netrw_list_hide = '.*\.pyc'
+let g:netrw_list_hide = '.*\.pyc,__pycache__/'
 
 " Folding
 set foldenable
@@ -162,6 +213,63 @@ nnoremap <leader>N :lprevious<CR>
 " entering new line without entering insert mode
 nnoremap oo o<Esc>k
 nnoremap OO O<Esc>j
+
+" fuzzy file
+map <C-p> :GFiles<CR>
+
+" ale
+nnoremap <space>l :lnext<CR>
+nnoremap <space>p :lprevious<CR>
+nnoremap <space>r :lrewind<CR>
+nmap <leader>F :ALEFix<CR>
+
+" COC configuration
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+inoremap <silent><expr> <C-Space> coc#refresh()
+
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" Remap keys for goto
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K for show documentation in preview window
+nnoremap <silent> gh :call <SID>show_documentation()<CR>
+
+" terminal mode
+tnoremap <Esc> <C-\><C-n>
+
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Show signature help while editing
+autocmd CursorHoldI * silent! call CocAction('showSignatureHelp')
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap for rename current word
+nmap <F2> <Plug>(coc-rename)
+
+" Use `:Format` for format current buffer
+command! -nargs=0 CocFormat :call CocAction('format')
+
+nmap <leader>r :CocFormat<CR>
+
+" Use `:Fold` for fold current buffer
+command! -nargs=? CocFold :call CocAction('fold', <f-args>)
 
 " --- custom functions ---
 " Increase a number in a column -- use C-v and then C-a
