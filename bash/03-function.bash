@@ -86,7 +86,7 @@ gen-pswd() {
         command pwgen -ysB $1
     else
         # use system random
-        </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c $1  ; echo
+            </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c $1  ; echo
     fi
 }
 
@@ -114,4 +114,40 @@ add-path() {
 
 se_download_html() {
     command curl http://95.217.135.107/media/serp_html/${1}.html -L --output ${1}.html
+}
+
+lambda-rust-deploy-all-regions() {
+    declare -a regions=("us-east-1" "us-east-2" "us-west-1" "us-west-2" "ap-south-1" "ap-southeast-1" "ap-southeast-2" "ap-northeast-1" "ap-northeast-2" "ap-northeast-3" "ca-central-1" "eu-central-1" "eu-west-1" "eu-west-2" "eu-west-3" "eu-north-1" "sa-east-1" "eu-south-1")
+    for i in "${regions[@]}"
+    do
+        echo "deploy to $i"
+        aws lambda create-function --function-name ${1} --runtime provided.al2 --handler hello --role 'arn:aws:iam::749323766402:role/awslambdaproxy-role' --zip-file ${2} --region ${i} --timeout 120 >> /dev/null 2>&1
+    done
+}
+
+lambda-rust-deploy-arm64-all-regions() {
+    declare -a regions=("us-east-1" "us-east-2" "us-west-2" "ap-south-1" "ap-southeast-1" "ap-southeast-2" "ap-northeast-1" "eu-central-1" "eu-west-1" "eu-west-2")
+    for i in "${regions[@]}"
+    do
+        echo "deploy to $i"
+        aws lambda create-function --function-name ${1} --runtime provided.al2 --handler hello --architectures arm64 --role 'arn:aws:iam::749323766402:role/awslambdaproxy-role' --zip-file ${2} --region ${i} --timeout 120 >> /dev/null 2>&1
+    done
+}
+
+gcloud-go-deploy-tier1() {
+    declare -a regions=("us-west1" "us-central1" "us-east1" "us-east4" "europe-west1" "europe-west2" "asia-east1" "asia-east2" "asia-northeast1" "asia-northeast2")
+    for i in "${regions[@]}"
+    do
+        echo "deploy to $i"
+        gcloud functions deploy ${1} --entry-point=KanakFnHTTP --runtime go116 --trigger-http --allow-unauthenticated --region ${i} >> /dev/null 2>&1
+    done
+}
+
+gcloud-go-deploy-tier2() {
+    declare -a regions=("us-west2" "us-west3" "us-west4" "northamerica-northeast1" "southamerica-east1" "europe-west3" "europe-west6" "europe-central2" "australia-southeast1" "asia-south1" "asia-southeast1" "asia-southeast2" "asia-northeast3")
+    for i in "${regions[@]}"
+    do
+        echo "deploy to $i"
+        gcloud functions deploy ${1} --entry-point=KanakFnHTTP --runtime go116 --trigger-http --allow-unauthenticated --region ${i} >> /dev/null 2>&1
+    done
 }

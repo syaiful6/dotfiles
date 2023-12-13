@@ -4,4 +4,4 @@ if [[ -d "$HOME/.nvm" ]]; then
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
 
-export PATH="$HOME/.local/bin:$HOME/.rvm/bin:$HOME/.poetry/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.rvm/bin:$HOME/.poetry/bin:$HOME/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"

@@ -16,6 +16,10 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'sgur/vim-editorconfig'
 Plug 'itchyny/lightline.vim'
+Plug 'koka-lang/koka', {'rtp': 'support/vim'}
+Plug 'lambdalisue/vim-cython-syntax'
+Plug 'jordwalke/vim-reasonml'
+Plug 'gleam-lang/gleam.vim'
 
 " Initialize plugin system
 call plug#end()
@@ -44,8 +48,17 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_fix_on_save = 1
 
+let g:ale_linters = {
+\   'ocaml': ['merlin'],
+\}
+
 let g:ale_fixers = {
 \   'python': ['black'],
+\   'ocaml': ['ocamlformat'],
+\}
+
+let g:LanguageClient_serverCommands = {
+\   'ocaml': ['ocamllsp'],
 \}
 
 " fzf fuzzy finder
