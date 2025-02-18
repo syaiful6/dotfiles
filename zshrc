@@ -99,29 +99,3 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 source ~/.bashrc.force
-
-# pnpm
-export PNPM_HOME="/home/syaiful/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# opam configuration
-[[ ! -r /home/syaiful/.opam/opam-init/init.zsh ]] || source /home/syaiful/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-# __conda_setup="$('/Users/syaiful/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#   eval "$__conda_setup"
-# else
-#   if [ -f "/Users/syaiful/miniconda3/etc/profile.d/conda.sh" ]; then
-#     . "/Users/syaiful/miniconda3/etc/profile.d/conda.sh"
-#   else
-#     export PATH="/Users/syaiful/miniconda3/bin:$PATH"
-#   fi
-# fi
-# unset __conda_setup
-# <<< conda initialize <<<
