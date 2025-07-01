@@ -1,0 +1,4 @@
+export LANG="en_US.UTF-8"
+export VCPKG_ROOT="$HOME/vcpkg"
+export PATH="$VCPKG_ROOT:$PATH"
+export EDITOR="nvim"

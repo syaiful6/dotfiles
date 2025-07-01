@@ -9,8 +9,6 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'morhetz/gruvbox'
 Plug 'overcache/NeoSolarized'
-Plug 'dense-analysis/ale'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -229,60 +227,6 @@ nnoremap OO O<Esc>j
 
 " fuzzy file
 map <C-p> :GFiles<CR>
-
-" ale
-nnoremap <space>l :lnext<CR>
-nnoremap <space>p :lprevious<CR>
-nnoremap <space>r :lrewind<CR>
-nmap <leader>F :ALEFix<CR>
-
-" COC configuration
-if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
-inoremap <silent><expr> <C-Space> coc#refresh()
-
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" Remap keys for goto
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K for show documentation in preview window
-nnoremap <silent> gh :call <SID>show_documentation()<CR>
-
-" terminal mode
-tnoremap <Esc> <C-\><C-n>
-
-function! s:show_documentation()
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Show signature help while editing
-autocmd CursorHoldI * silent! call CocAction('showSignatureHelp')
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <F2> <Plug>(coc-rename)
-
-" Use `:Format` for format current buffer
-command! -nargs=0 CocFormat :call CocAction('format')
-
-nmap <leader>r :CocFormat<CR>
-
-" Use `:Fold` for fold current buffer
-command! -nargs=? CocFold :call CocAction('fold', <f-args>)
 
 " --- custom functions ---
 " Increase a number in a column -- use C-v and then C-a

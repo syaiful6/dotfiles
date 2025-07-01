@@ -28,6 +28,8 @@ return {
         "ocaml",
         "scss",
         "swift",
+        "nix",
+        "starlark",
       },
       auto_install = true,
       ignore_install = { " " },
