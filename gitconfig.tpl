@@ -1,6 +1,6 @@
 [user]
-    name = <%= DotfilesConfig['git_username'] %>
-    email = <%= DotfilesConfig['git_email'] %>
+    name = YOUR_NAME
+    email = YOUR_EMAIL
 [alias]
     co = checkout
     st = status
@@ -21,10 +21,6 @@
 [format]
     pretty = %C(yellow)%h%Creset %s %C(red)(%an, %cr)%Creset
 [github]
-    user = <%= DotfilesConfig['github_username'] %>
+    user = YOUR_GITHUB_USERNAME
 [web]
     browser = chromium-browser
-<% if (helper = DotfilesConfig['git_credential_helper']) %>
-[credential]
-    helper = <%= helper %>
-<% end %>

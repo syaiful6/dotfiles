@@ -11,10 +11,10 @@ if [[ -d "$HOME/.nvm" ]]; then
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 fi
 
-if [[ -d "$HOME/.config/kokav" ]]; then
-  export KOKAV_DIR="$HOME/.config/kokav"
-  [ -s "$KOKAV_DIR/kokav.sh" ] && \. "$KOKAV_DIR/kokav.sh" # This loads kokav
-fi
+# if [[ -d "$HOME/.config/kokav" ]]; then
+#   export KOKAV_DIR="$HOME/.config/kokav"
+#   [ -s "$KOKAV_DIR/kokav.sh" ] && \. "$KOKAV_DIR/kokav.sh" # This loads kokav
+# fi
 
 #source "$HOME/.rye/env"
 
