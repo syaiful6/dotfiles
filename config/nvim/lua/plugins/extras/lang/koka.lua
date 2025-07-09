@@ -7,6 +7,7 @@ return {
           kk = "koka",
         },
       })
+      vim.treesitter.language.add("koka", { filetype = "koka" })
     end,
   },
   {

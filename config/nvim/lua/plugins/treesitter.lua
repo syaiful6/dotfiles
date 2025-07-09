@@ -26,32 +26,35 @@ return {
         "c",
         "proto",
         "ocaml",
+        "ocaml_interface",
         "scss",
         "swift",
         "nix",
         "starlark",
       },
-      auto_install = true,
-      ignore_install = { " " },
-      sync_install = false,
-
       highlight = {
-        enable = true, -- false will disable the whole extension
-        disable = { "css" },
-      },
-      autopairs = {
-        enable = true,
-      },
-      indent = { enable = true, disable = { "python", "css" } },
-
-      context_commentstring = {
-        enable = true,
-        enable_autocmd = false,
-      },
-
-      autotag = {
         enable = true,
       },
     },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function()
+      local parsers = require("nvim-treesitter.parsers").get_parser_configs()
+      parsers.reason = {
+        install_info = {
+          url = "https://github.com/reasonml-editor/tree-sitter-reason",
+          files = { "src/parser.c", "src/scanner.c" },
+          branch = "master",
+        },
+      }
+      parsers.koka = {
+        install_info = {
+          url = "https://github.com/mtoohey31/tree-sitter-koka",
+          files = { "src/parser.c", "src/scanner.c" },
+          branch = "main",
+        },
+      }
+    end,
   },
 }

@@ -70,7 +70,6 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git direnv)
 
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -99,3 +98,5 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 source ~/.bashrc.force
+
+source $ZSH/oh-my-zsh.sh
