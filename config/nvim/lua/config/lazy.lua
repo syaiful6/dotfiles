@@ -33,12 +33,16 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.terraform" },
     { import = "lazyvim.plugins.extras.lang.elixir" },
     { import = "lazyvim.plugins.extras.lang.zig" },
-    { import = "lazyvim.plugins.extras.ui.mini-animate" },
+    -- debugging
     { import = "lazyvim.plugins.extras.dap.core" },
     { import = "lazyvim.plugins.extras.dap.nlua" },
+    -- testing / Neotest
+    { import = "lazyvim.plugins.extras.test.core" },
+    -- coding, ui, helpers
+    { import = "lazyvim.plugins.extras.ui.mini-animate" },
     { import = "lazyvim.plugins.extras.coding.yanky" },
     { import = "lazyvim.plugins.extras.coding.nvim-cmp" },
-    { import = "lazyvim.plugins.extras.test.core" },
+    { import = "lazyvim.plugins.extras.editor.harpoon2" },
     -- ai
     { import = "lazyvim.plugins.extras.ai.copilot" },
     { import = "lazyvim.plugins.extras.ai.copilot-chat" },

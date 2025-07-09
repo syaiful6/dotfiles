@@ -20,7 +20,7 @@ return {
     end,
   },
   {
-  "neovim/nvim-lspconfig",
+    "neovim/nvim-lspconfig",
     opts = {
       servers = {
         ocamllsp = {
@@ -36,8 +36,9 @@ return {
               "*.ml"
             )(fname)
           end,
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 }
+
