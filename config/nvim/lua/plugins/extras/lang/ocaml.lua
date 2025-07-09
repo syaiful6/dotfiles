@@ -11,6 +11,12 @@ return {
       if type(opts.ensure_installed) == "table" then
         vim.list_extend(opts.ensure_installed, { "ocaml" })
       end
+      vim.filetype.add({
+        extension = {
+          re = "reason",
+        },
+      })
+      vim.treesitter.language.add("reason", { filetype = "reason" })
     end,
   },
   {
@@ -33,9 +39,5 @@ return {
         }
       }
     }
-  },
-  {
-    "reasonml-editor/vim-reason-plus",
-    opts = {},
   }
 }
