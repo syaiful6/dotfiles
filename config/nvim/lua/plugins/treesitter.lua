@@ -48,13 +48,6 @@ return {
           branch = "master",
         },
       }
-      parsers.koka = {
-        install_info = {
-          url = "https://github.com/mtoohey31/tree-sitter-koka",
-          files = { "src/parser.c", "src/scanner.c" },
-          branch = "main",
-        },
-      }
     end,
   },
 }

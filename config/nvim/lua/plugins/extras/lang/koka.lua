@@ -1,29 +1,54 @@
 return {
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, _)
-      vim.filetype.add({
-        extension = {
-          kk = "koka",
-        },
+    dir = "/Users/sbahri/Developer/prj/koka/koka.nvim",
+    opts = {},
+    config = function(_, opts)
+      -- copy opts to kokanvim global
+      vim.g.kokanvim = vim.tbl_deep_extend("keep", vim.g.kokanvim or {}, opts or {})
+      -- setup custom keymaps, (optional)
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "koka",
+        callback = function()
+          local buf = vim.api.nvim_get_current_buf()
+          vim.keymap.set("n", "<leader>kr", ":KokaRun<CR>", { buffer = buf, desc = "Run Koka function at cursor" })
+          vim.keymap.set("n", "<leader>kb", ":KokaBuild<CR>", { buffer = buf, desc = "Build Koka program" })
+        end,
       })
-      vim.treesitter.language.add("koka", { filetype = "koka" })
     end,
   },
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        koka = {
-          root_dir = function(name)
-            return require("lspconfig.util").root_pattern(
-                ".git",
-                "package.kk",
-                "*.kk"
-              )(fname)
-          end,
-        },
+        koka = { autostart = false },
       },
     },
   },
+  -- {
+  --   "nvim-treesitter/nvim-treesitter",
+  --   opts = function(_, _)
+  --     vim.filetype.add({
+  --       extension = {
+  --         kk = "koka",
+  --       },
+  --     })
+  --     vim.treesitter.language.add("koka", { filetype = "koka" })
+  --   end,
+  -- },
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   opts = {
+  --     servers = {
+  --       koka = {
+  --         root_dir = function(name)
+  --           return require("lspconfig.util").root_pattern(
+  --               ".git",
+  --               "package.kk",
+  --               "*.kk"
+  --             )(fname)
+  --         end,
+  --       },
+  --     },
+  --   },
+  -- },
 }

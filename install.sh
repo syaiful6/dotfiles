@@ -59,12 +59,7 @@ setup_gitconfig() {
     local target="$HOME/.gitconfig"
     
     if [[ -f "$target" ]]; then
-        echo -e "${YELLOW}$target already exists${NC}"
-        read -p "Replace it? [y/N] " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            return 0
-        fi
+        return 0
     fi
     
     # Prompt for git configuration
@@ -125,8 +120,9 @@ cd "$DOTFILES_DIR" || exit 1
 
 # Find all files and create symlinks
 while IFS= read -r -d '' file; do
-    # Remove leading ./
+    # Remove leading ./ and any remaining leading /
     file="${file#./}"
+    file="${file#/}"
     
     # Skip if should be excluded
     if should_exclude "$file"; then

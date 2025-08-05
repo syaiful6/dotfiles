@@ -1,12 +1,13 @@
 if lazyvim_docs then
   -- LSP Server to use for Python.
-  -- Set to "basedpyright" to use basedpyright instead of pyright.
-  vim.g.lazyvim_python_lsp = "pyright"
+  -- Options: "pylsp", "pyright", "basedpyright"
+  -- pylsp recommended for Django projects
+  vim.g.lazyvim_python_lsp = "pylsp"
   -- Set to "ruff_lsp" to use the old LSP implementation version.
   vim.g.lazyvim_python_ruff = "ruff"
 end
 
-local lsp = vim.g.lazyvim_python_lsp or "pyright"
+local lsp = vim.g.lazyvim_python_lsp or "pylsp"
 local ruff = vim.g.lazyvim_python_ruff or "ruff"
 
 return {
@@ -31,6 +32,27 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
+        pylsp = {
+          settings = {
+            pylsp = {
+              plugins = {
+                django = { enabled = true },
+                rope_completion = { enabled = true },
+                rope_autoimport = { enabled = true },
+                pylint = { enabled = true },
+                mypy = { enabled = true },
+                black = { enabled = true },
+                isort = { enabled = true },
+                -- Disable conflicting plugins when using ruff
+                pyflakes = { enabled = false },
+                pycodestyle = { enabled = false },
+                mccabe = { enabled = false },
+                autopep8 = { enabled = false },
+                yapf = { enabled = false },
+              },
+            },
+          },
+        },
         ruff = {
           cmd_env = { RUFF_TRACE = "messages" },
           init_options = {
@@ -59,7 +81,7 @@ return {
       setup = {
         [ruff] = function()
           LazyVim.lsp.on_attach(function(client, _)
-            -- Disable hover in favor of Pyright
+            -- Disable hover in favor of pylsp
             client.server_capabilities.hoverProvider = false
           end, ruff)
         end,
@@ -69,7 +91,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      local servers = { "pyright", "basedpyright", "ruff", "ruff_lsp", ruff, lsp }
+      local servers = { "pyright", "basedpyright", "pylsp", "ruff", "ruff_lsp", ruff, lsp }
       for _, server in ipairs(servers) do
         opts.servers[server] = opts.servers[server] or {}
         opts.servers[server].enabled = server == lsp or server == ruff
@@ -85,9 +107,9 @@ return {
     opts = {
       adapters = {
         ["neotest-python"] = {
-          -- Here you can specify the settings for the adapter, i.e.
-          -- runner = "pytest",
-          -- python = ".venv/bin/python",
+          runner = "pytest",
+          python = ".venv/bin/python",
+          args = { "--tb=short", "-v" },
         },
       },
     },
@@ -103,7 +125,11 @@ return {
         { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
       },
       config = function()
-        if vim.fn.has("win32") == 1 then
+        -- First try to use project's .venv, fallback to system debugpy
+        local venv_python = vim.fn.getcwd() .. "/.venv/bin/python"
+        if vim.fn.executable(venv_python) == 1 then
+          require("dap-python").setup(venv_python)
+        elseif vim.fn.has("win32") == 1 then
           require("dap-python").setup(LazyVim.get_pkg_path("debugpy", "/venv/Scripts/pythonw.exe"))
         else
           require("dap-python").setup(LazyVim.get_pkg_path("debugpy", "/venv/bin/python"))

@@ -3,10 +3,10 @@ if [[ -d "$HOME/.cargo" ]]; then
 fi
 
 # ghcup config
-[ -f "/Users/syaifulbahri/.ghcup/env" ] && . "/Users/syaifulbahri/.ghcup/env" # ghcup-env
+[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env" # ghcup-env
 
-if [[ -d "$HOME/.nvm" ]]; then
-  export NVM_DIR="$HOME/.nvm"
+if [[ -d "$HOME/.config/nvm" ]]; then
+  export NVM_DIR="$HOME/.config/nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 fi
