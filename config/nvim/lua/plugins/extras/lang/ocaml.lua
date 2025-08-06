@@ -1,3 +1,15 @@
+local ocaml_ft = {
+  "dune",
+  "ocaml",
+  "ocaml.cram",
+  "ocaml.interface",
+  "ocaml.menhir",
+  "ocaml.mlx",
+  "ocaml.ocamllex",
+  "opam",
+  "reason",
+}
+
 return {
   recommended = function()
     return LazyVim.extras.wants({
@@ -5,6 +17,10 @@ return {
       root = { "merlin.opam", "dune-project" },
     })
   end,
+  {
+    "ocaml/vim-ocaml",
+    ft = ocaml_ft,
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
@@ -41,4 +57,3 @@ return {
     },
   },
 }
-
