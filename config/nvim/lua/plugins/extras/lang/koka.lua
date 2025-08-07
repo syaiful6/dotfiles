@@ -1,6 +1,9 @@
 return {
   {
-    dir = "/Users/sbahri/Developer/prj/koka/koka.nvim",
+    "syaiful6/koka.nvim",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
     opts = {},
     config = function(_, opts)
       -- copy opts to kokanvim global
