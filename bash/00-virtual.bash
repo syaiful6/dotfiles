@@ -36,8 +36,13 @@ if [[ -d "$HOME/.config/phpenv" ]]; then
   eval "$(phpenv init -)"
 fi
 
-[[ $(arch) = "arm64" ]] &&
-  eval "$(/opt/homebrew/bin/brew shellenv)" ||
-  eval "$(/usr/local/Homebrew/bin/brew shellenv)"
+if [ "$(uname -s)" = "Darwin" ]; then
+  [[ $(arch) = "arm64" ]] &&
+    eval "$(/opt/homebrew/bin/brew shellenv)" ||
+    eval "$(/usr/local/Homebrew/bin/brew shellenv)"
+else
+  # assume it's a linux brew
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
-export PATH="$HOME/.local/bin:$HOME/.rvm/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.rvm/bin:$PATH"
