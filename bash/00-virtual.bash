@@ -1,4 +1,5 @@
-if [[ -d "$HOME/.cargo" ]]; then
+# rust setup
+if [[ -e "$HOME/.cargo/env" ]]; then
   . "$HOME/.cargo/env"
 fi
 
@@ -10,13 +11,6 @@ if [[ -d "$HOME/.config/nvm" ]]; then
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 fi
-
-# if [[ -d "$HOME/.config/kokav" ]]; then
-#   export KOKAV_DIR="$HOME/.config/kokav"
-#   [ -s "$KOKAV_DIR/kokav.sh" ] && \. "$KOKAV_DIR/kokav.sh" # This loads kokav
-# fi
-
-#source "$HOME/.rye/env"
 
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
@@ -42,7 +36,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
     eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 else
   # assume it's a linux brew
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  if [[ -d "/home/linuxbrew/.linuxbrew" ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  fi
 fi
 
 export PATH="$HOME/.local/bin:$HOME/.rvm/bin:$PATH"
