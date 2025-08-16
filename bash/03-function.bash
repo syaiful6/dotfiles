@@ -138,3 +138,8 @@ check-trailing-whitespace() {
     fi
   done < <(git ls-files)
 }
+
+# changes file's permissions recursively based on passed directory and permissions
+chmod-files() {
+  find "$1" -type f -exec chmod "$2" {} \;
+}
