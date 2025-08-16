@@ -6,6 +6,9 @@ return {
       { "giuxtaposition/blink-cmp-copilot" },
     },
     opts = {
+      fuzzy = {
+        implementation = "prefer_rust_with_warning",
+      },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
         providers = {
