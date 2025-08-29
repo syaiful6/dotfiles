@@ -100,3 +100,7 @@ plugins=(git direnv)
 source ~/.bashrc.force
 
 source $ZSH/oh-my-zsh.sh
+
+if [[ -e "$HOME/.local/share/../bin/env" ]] ; then
+  . "$HOME/.local/share/../bin/env"
+fi
