@@ -1,13 +1,45 @@
 if lazyvim_docs then
   -- LSP Server to use for Python.
-  -- Options: "pylsp", "pyright", "basedpyright"
-  -- pylsp recommended for Django projects
-  vim.g.lazyvim_python_lsp = "pylsp"
+  -- Options: "pyrefly", "pylsp", "pyright", "basedpyright"
+  -- pyrefly is Meta's fast Python language server, fallback to pylsp
+  vim.g.lazyvim_python_lsp = "pyrefly"
   -- Set to "ruff_lsp" to use the old LSP implementation version.
   vim.g.lazyvim_python_ruff = "ruff"
 end
 
-local lsp = vim.g.lazyvim_python_lsp or "pylsp"
+-- Function to check if pyrefly is available, fallback to pylsp
+local function get_python_lsp()
+  local lsp_preference = vim.g.lazyvim_python_lsp or "pyrefly"
+
+  if lsp_preference == "pyrefly" then
+    -- Check if pyrefly is available globally
+    if vim.fn.executable("pyrefly") == 1 then
+      return "pyrefly"
+    end
+
+    -- Check if pyrefly is available in active virtual environment
+    local venv_python = os.getenv("VIRTUAL_ENV")
+    if venv_python then
+      local venv_pyrefly = venv_python .. "/bin/pyrefly"
+      if vim.fn.executable(venv_pyrefly) == 1 then
+        return "pyrefly"
+      end
+    end
+
+    -- Check project's .venv directory
+    local project_venv = vim.fn.getcwd() .. "/.venv/bin/pyrefly"
+    if vim.fn.executable(project_venv) == 1 then
+      return "pyrefly"
+    end
+
+    -- Fallback to pylsp
+    vim.notify("pyrefly not found in global or venv, falling back to pylsp", vim.log.levels.WARN)
+    return "pylsp"
+  end
+
+  return lsp_preference
+end
+
 local ruff = vim.g.lazyvim_python_ruff or "ruff"
 
 return {
@@ -30,8 +62,40 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      -- Define pyrefly as a custom server
+      local lspconfig = require("lspconfig")
+      local configs = require("lspconfig.configs")
+
+      -- Add pyrefly config if it doesn't exist
+      if not configs.pyrefly then
+        configs.pyrefly = {
+          default_config = {
+            cmd = { "pyrefly", "lsp" }, -- will be overridden in setup
+            filetypes = { "python" },
+            root_dir = function(fname)
+              return lspconfig.util.root_pattern(
+                "pyrefly.toml",
+                "pyproject.toml",
+                "setup.py",
+                "setup.cfg",
+                "requirements.txt",
+                "Pipfile",
+                ".git"
+              )(fname)
+            end,
+            -- single_file_support = true,
+            settings = {},
+          },
+        }
+      end
+    end,
+  },
+  {
+    "neovim/nvim-lspconfig",
     opts = {
       servers = {
+        pyrefly = {},
         pylsp = {
           settings = {
             pylsp = {
@@ -85,13 +149,40 @@ return {
             client.server_capabilities.hoverProvider = false
           end, ruff)
         end,
+        pyrefly = function(_, opts)
+          -- Dynamically set the command at setup time
+          local function get_pyrefly_cmd()
+            if vim.fn.executable("pyrefly") == 1 then
+              return { "pyrefly", "lsp" }
+            end
+
+            local venv_python = os.getenv("VIRTUAL_ENV")
+            if venv_python then
+              local venv_pyrefly = venv_python .. "/bin/pyrefly"
+              if vim.fn.executable(venv_pyrefly) == 1 then
+                return { venv_pyrefly, "lsp" }
+              end
+            end
+
+            local project_venv = vim.fn.getcwd() .. "/.venv/bin/pyrefly"
+            if vim.fn.executable(project_venv) == 1 then
+              return { project_venv, "lsp" }
+            end
+
+            return { "pyrefly", "lsp" }
+          end
+
+          opts.cmd = get_pyrefly_cmd()
+          require("lspconfig").pyrefly.setup(opts)
+        end,
       },
     },
   },
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      local servers = { "pyright", "basedpyright", "pylsp", "ruff", "ruff_lsp", ruff, lsp }
+      local servers = { "pyrefly", "pyright", "basedpyright", "pylsp", "ruff", "ruff_lsp", ruff, lsp }
+      local lsp = get_python_lsp()
       for _, server in ipairs(servers) do
         opts.servers[server] = opts.servers[server] or {}
         opts.servers[server].enabled = server == lsp or server == ruff
@@ -148,7 +239,7 @@ return {
     opts = {
       settings = {
         options = {
-          notify_user_on_venv_activation = true,
+          notify_user_on_venv_activation = false,
         },
       },
     },
@@ -156,7 +247,6 @@ return {
     ft = "python",
     keys = { { "<leader>cv", "<cmd>:VenvSelect<cr>", desc = "Select VirtualEnv", ft = "python" } },
   },
-
 
   -- Don't mess up DAP adapters provided by nvim-dap-python
   {
