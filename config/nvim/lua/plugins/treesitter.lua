@@ -37,17 +37,4 @@ return {
       },
     },
   },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function()
-      local parsers = require("nvim-treesitter.parsers").get_parser_configs()
-      parsers.reason = {
-        install_info = {
-          url = "https://github.com/reasonml-editor/tree-sitter-reason",
-          files = { "src/parser.c", "src/scanner.c" },
-          branch = "master",
-        },
-      }
-    end,
-  },
 }
