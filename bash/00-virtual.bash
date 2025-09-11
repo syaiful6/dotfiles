@@ -21,7 +21,7 @@ esac
 # pnpm end
 
 # opam configuration
-[[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" >/dev/null 2>/dev/null
+# [[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" >/dev/null 2>/dev/null
 
 # phpenv
 if [[ -d "$HOME/.config/phpenv" ]]; then
