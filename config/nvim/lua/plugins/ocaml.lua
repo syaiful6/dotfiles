@@ -35,10 +35,7 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        ocamllsp = {
-          mason = false,
-          autostart = false, -- start via ocamlnvim
-        },
+        ocamllsp = false,
       },
     },
   },
