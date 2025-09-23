@@ -1,6 +1,7 @@
 return {
   {
-    "syaiful6/koka.nvim",
+    -- "syaiful6/koka.nvim",
+    dir = "/Users/sbahri/Developer/prj/koka/koka.nvim",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
@@ -23,35 +24,8 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        koka = { autostart = false },
+        koka = false,
       },
     },
   },
-  -- {
-  --   "nvim-treesitter/nvim-treesitter",
-  --   opts = function(_, _)
-  --     vim.filetype.add({
-  --       extension = {
-  --         kk = "koka",
-  --       },
-  --     })
-  --     vim.treesitter.language.add("koka", { filetype = "koka" })
-  --   end,
-  -- },
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   opts = {
-  --     servers = {
-  --       koka = {
-  --         root_dir = function(name)
-  --           return require("lspconfig.util").root_pattern(
-  --               ".git",
-  --               "package.kk",
-  --               "*.kk"
-  --             )(fname)
-  --         end,
-  --       },
-  --     },
-  --   },
-  -- },
 }
