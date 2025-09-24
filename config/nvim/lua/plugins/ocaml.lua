@@ -7,7 +7,7 @@ local ocaml_ft = {
   "ocaml.mlx",
   "ocaml.ocamllex",
   "opam",
-  "reason"
+  "reason",
 }
 
 return {
@@ -18,15 +18,17 @@ return {
     })
   end,
   {
-    "ocaml/vim-ocaml",
-    ft = ocaml_ft,
-  },
-  {
     "syaiful6/ocaml.nvim",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
-    opts = {},
+    opts = {
+      lsp = {
+        on_attach = function(_, bufnr)
+          vim.keymap.set("n", "<leader>cD", vim.lsp.buf.document_symbol, { buffer = bufnr, desc = "Document Symbols" })
+        end,
+      },
+    },
     config = function(_, opts)
       vim.g.ocamlnvim = vim.tbl_deep_extend("keep", vim.g.ocamlnvim or {}, opts or {})
     end,

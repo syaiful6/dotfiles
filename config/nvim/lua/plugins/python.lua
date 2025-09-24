@@ -32,8 +32,6 @@ local function get_python_lsp()
       return "pyrefly"
     end
 
-    -- Fallback to pylsp
-    vim.notify("pyrefly not found in global or venv, falling back to pylsp", vim.log.levels.WARN)
     return "pylsp"
   end
 
@@ -62,40 +60,8 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    opts = function(_, opts)
-      -- Define pyrefly as a custom server
-      local lspconfig = require("lspconfig")
-      local configs = require("lspconfig.configs")
-
-      -- Add pyrefly config if it doesn't exist
-      if not configs.pyrefly then
-        configs.pyrefly = {
-          default_config = {
-            cmd = { "pyrefly", "lsp" }, -- will be overridden in setup
-            filetypes = { "python" },
-            root_dir = function(fname)
-              return lspconfig.util.root_pattern(
-                "pyrefly.toml",
-                "pyproject.toml",
-                "setup.py",
-                "setup.cfg",
-                "requirements.txt",
-                "Pipfile",
-                ".git"
-              )(fname)
-            end,
-            -- single_file_support = true,
-            settings = {},
-          },
-        }
-      end
-    end,
-  },
-  {
-    "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        pyrefly = {},
         pylsp = {
           settings = {
             pylsp = {
@@ -152,10 +118,6 @@ return {
         pyrefly = function(_, opts)
           -- Dynamically set the command at setup time
           local function get_pyrefly_cmd()
-            if vim.fn.executable("pyrefly") == 1 then
-              return { "pyrefly", "lsp" }
-            end
-
             local venv_python = os.getenv("VIRTUAL_ENV")
             if venv_python then
               local venv_pyrefly = venv_python .. "/bin/pyrefly"
@@ -181,8 +143,8 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      local servers = { "pyrefly", "pyright", "basedpyright", "pylsp", "ruff", "ruff_lsp", ruff, lsp }
       local lsp = get_python_lsp()
+      local servers = { "pyrefly", "pyright", "basedpyright", "pylsp", "ruff", "ruff_lsp", ruff, lsp }
       for _, server in ipairs(servers) do
         opts.servers[server] = opts.servers[server] or {}
         opts.servers[server].enabled = server == lsp or server == ruff
