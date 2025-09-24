@@ -1,7 +1,6 @@
 return {
   {
-    -- "syaiful6/koka.nvim",
-    dir = "/Users/sbahri/Developer/prj/koka/koka.nvim",
+    "syaiful6/koka.nvim",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
