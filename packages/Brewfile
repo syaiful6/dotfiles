@@ -1,0 +1,30 @@
+# Core development tools
+brew "git"
+brew "neovim"
+brew "tmux"
+
+# Modern CLI utilities
+brew "ripgrep"
+brew "fd"
+brew "bat"
+brew "eza"
+brew "fzf"
+brew "jq"
+brew "htop"
+
+# Build tools and utilities
+brew "make"
+brew "cmake"
+brew "pkg-config"
+
+# GPG for commit signing
+brew "gnupg"
+brew "pinentry-mac"
+
+# Terminal emulator
+cask "ghostty"
+
+# Fonts
+tap "homebrew/cask-fonts"
+cask "font-jetbrains-mono-nerd-font"
+cask "font-fira-code-nerd-font"

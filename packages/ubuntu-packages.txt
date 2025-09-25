@@ -1,0 +1,30 @@
+# Core development tools
+git
+neovim
+tmux
+
+# Modern CLI utilities
+ripgrep
+fd-find
+bat
+fzf
+jq
+htop
+
+# Build tools and utilities
+make
+cmake
+pkg-config
+build-essential
+curl
+wget
+
+# GPG for commit signing
+gnupg
+pinentry-curses
+
+# Additional Ubuntu-specific packages
+software-properties-common
+apt-transport-https
+ca-certificates
+xclip

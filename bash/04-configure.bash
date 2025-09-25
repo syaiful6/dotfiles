@@ -4,3 +4,6 @@ fi
 
 # Disable XON/XOFF for Vim compatibility
 stty -ixon
+
+# GPG Configuration
+export GPG_TTY=$(tty)
