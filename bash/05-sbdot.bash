@@ -226,17 +226,52 @@ _sbdot_gpg_list() {
 }
 
 _sbdot_gpg_backup() {
+  local key_selector="$1"
   local backup_dir="$HOME/.gnupg-backup"
   mkdir -p "$backup_dir"
 
   echo -e "${_sbdot_blue}📤 Backing up GPG keys...${_sbdot_nc}"
 
-  # Get the key ID
-  local key_id=$(gpg --list-secret-keys --keyid-format LONG | grep "sec" | head -1 | sed 's/.*\/\([A-F0-9]*\) .*/\1/')
+  local key_id
+  if [[ -z "$key_selector" ]]; then
+    # No argument provided, list keys and let user choose
+    local keys=($(gpg --list-secret-keys --keyid-format LONG | grep "sec" | sed 's/.*\/\([A-F0-9]*\) .*/\1/'))
 
-  if [[ -z "$key_id" ]]; then
-    echo -e "${_sbdot_red}❌ No GPG keys found to backup${_sbdot_nc}"
-    return 1
+    if [[ ${#keys[@]} -eq 0 ]]; then
+      echo -e "${_sbdot_red}❌ No GPG keys found to backup${_sbdot_nc}"
+      return 1
+    elif [[ ${#keys[@]} -eq 1 ]]; then
+      # Only one key, use it
+      key_id="${keys[0]}"
+      echo "Backing up key: $key_id"
+    else
+      # Multiple keys, show list
+      echo "Available GPG keys:"
+      for i in "${!keys[@]}"; do
+        local kid="${keys[$i]}"
+        local email=$(gpg --list-secret-keys --keyid-format LONG | grep -A 1 "$kid" | grep "uid" | sed 's/.*<\([^>]*\)>.*/\1/')
+        echo "  $((i + 1)). $kid ($email)"
+      done
+      echo ""
+      printf "Select key to backup (1-${#keys[@]}): "
+      read choice
+
+      if [[ "$choice" -ge 1 && "$choice" -le ${#keys[@]} ]]; then
+        key_id="${keys[$((choice - 1))]}"
+      else
+        echo -e "${_sbdot_red}❌ Invalid selection${_sbdot_nc}"
+        return 1
+      fi
+    fi
+  else
+    # Key ID provided as argument
+    key_id="$key_selector"
+    # Verify key exists
+    if ! gpg --list-secret-keys --keyid-format LONG "$key_id" &>/dev/null; then
+      echo -e "${_sbdot_red}❌ Key not found: $key_id${_sbdot_nc}"
+      return 1
+    fi
+    echo "Backing up key: $key_id"
   fi
 
   # Export keys
@@ -246,10 +281,10 @@ _sbdot_gpg_backup() {
 
   # Create compressed backup
   local timestamp=$(date +%Y%m%d_%H%M%S)
-  local backup_file="$HOME/gpg-backup-$timestamp.tar.gz"
+  local backup_file="$HOME/gpg-backup-$key_id-$timestamp.tar.gz"
   tar -czf "$backup_file" -C "$HOME" .gnupg-backup
 
-  echo -e "${_sbdot_green}✅ GPG keys backed up to: $backup_file${_sbdot_nc}"
+  echo -e "${_sbdot_green}✅ GPG key $key_id backed up to: $backup_file${_sbdot_nc}"
   echo -e "${_sbdot_yellow}⚠️  Store this file securely!${_sbdot_nc}"
 }
 
@@ -557,7 +592,7 @@ sbdot() {
       _sbdot_gpg_list
       ;;
     "backup")
-      _sbdot_gpg_backup
+      _sbdot_gpg_backup "$3"
       ;;
     "restore")
       _sbdot_gpg_restore "$3"
@@ -604,7 +639,7 @@ sbdot() {
     echo "  gpg generate   Generate new GPG key"
     echo "  gpg list       List existing GPG keys"
     echo "  gpg copy       Copy GPG public key to clipboard"
-    echo "  gpg backup     Backup GPG keys"
+    echo "  gpg backup     Backup GPG keys (optionally specify key ID)"
     echo "  gpg restore    Restore GPG keys from backup"
     echo "  gpg configure  Configure Git for GPG signing"
     echo ""
@@ -623,4 +658,3 @@ sbdot() {
     ;;
   esac
 }
-
