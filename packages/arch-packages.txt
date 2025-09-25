@@ -1,0 +1,27 @@
+# Core development tools
+git
+neovim
+tmux
+
+# Modern CLI utilities
+ripgrep
+fd
+bat
+eza
+fzf
+jq
+htop
+
+# Build tools and utilities
+make
+cmake
+pkg-config
+base-devel
+
+# GPG for commit signing
+gnupg
+pinentry
+
+# Additional Arch-specific packages
+yay
+xclip

@@ -56,7 +56,9 @@ create_symlink() {
 # Function to setup gitconfig
 setup_gitconfig() {
     local source="$DOTFILES_DIR/gitconfig.tpl"
+    local work_source="$DOTFILES_DIR/gitconfig-work.tpl"
     local target="$HOME/.gitconfig"
+    local work_target="$HOME/.gitconfig-work"
     
     if [[ -f "$target" ]]; then
         return 0
@@ -64,17 +66,52 @@ setup_gitconfig() {
     
     # Prompt for git configuration
     echo -e "${GREEN}Setting up git configuration...${NC}"
+    
+    # Personal profile
+    echo -e "${BLUE}Personal profile:${NC}"
     read -p "Enter your full name: " git_name
-    read -p "Enter your email: " git_email
+    read -p "Enter your personal email: " git_email
     read -p "Enter your GitHub username: " github_username
     
-    # Create gitconfig from template
+    # Work profile
+    echo -e "${BLUE}Work profile (leave empty to skip):${NC}"
+    read -p "Enter your work name (or press Enter for same as personal): " work_name
+    read -p "Enter your work email (or press Enter to skip): " work_email
+    read -p "Enter your work directory path (default: ~/Documents/code/bbx): " work_path
+    
+    # Use personal name for work if not provided
+    if [[ -z "$work_name" ]]; then
+        work_name="$git_name"
+    fi
+    
+    # Use default work path if not provided
+    if [[ -z "$work_path" ]]; then
+        work_path="~/Documents/code/bbx"
+    fi
+    
+    # Create main gitconfig from template
     sed -e "s/YOUR_NAME/$git_name/g" \
         -e "s/YOUR_EMAIL/$git_email/g" \
+        -e "s/YOUR_SIGNING_KEY//g" \
         -e "s/YOUR_GITHUB_USERNAME/$github_username/g" \
+        -e "s|YOUR_WORK_PATH|$work_path|g" \
         "$source" > "$target"
     
-    echo -e "${GREEN}Created: $target${NC}"
+    # Create work gitconfig if work email provided
+    if [[ -n "$work_email" ]]; then
+        sed -e "s/YOUR_WORK_NAME/$work_name/g" \
+            -e "s/YOUR_WORK_EMAIL/$work_email/g" \
+            -e "s/YOUR_WORK_SIGNING_KEY//g" \
+            "$work_source" > "$work_target"
+        
+        echo -e "${GREEN}Created: $target${NC}"
+        echo -e "${GREEN}Created: $work_target${NC}"
+        echo -e "${YELLOW}Work profile will be used in: $work_path${NC}"
+    else
+        echo -e "${GREEN}Created: $target (personal profile only)${NC}"
+    fi
+    
+    echo -e "${YELLOW}💡 Run 'sbdot gpg generate' to create GPG keys for commit signing${NC}"
 }
 
 # Function to check if file should be excluded
@@ -98,16 +135,19 @@ should_exclude() {
     
     # Exclude specific files
     case "$file" in
-        "install.rb"|"install.sh"|".gitignore"|".gitmodules"|"config.rb"|"CLAUDE.md"|"README.md")
+        "install.rb"|"install.sh"|".gitignore"|".gitmodules"|"CLAUDE.md"|"README.md")
             return 0
             ;;
         *"_extras/"*)
             return 0
             ;;
+        "packages/"*|"packages")
+            return 0
+            ;;
         "bashrc.local")
             return 0
             ;;
-        "gitconfig.tpl")
+        "gitconfig.tpl"|"gitconfig-work.tpl")
             return 0
             ;;
     esac
@@ -135,6 +175,13 @@ while IFS= read -r -d '' file; do
     
     create_symlink "$source" "$target"
 done < <(find . -type f -not -path './.git/*' -print0)
+
+# Create sbdot config directory and symlink packages
+mkdir -p "$HOME/.config/sbdot"
+if [[ ! -e "$HOME/.config/sbdot/packages" ]]; then
+    ln -s "$DOTFILES_DIR/packages" "$HOME/.config/sbdot/packages"
+    echo -e "${GREEN}Linked: ~/.config/sbdot/packages -> $DOTFILES_DIR/packages${NC}"
+fi
 
 # Setup gitconfig
 setup_gitconfig
