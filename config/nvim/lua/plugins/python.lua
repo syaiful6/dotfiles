@@ -12,23 +12,8 @@ local function get_python_lsp()
   local lsp_preference = vim.g.lazyvim_python_lsp or "pyrefly"
 
   if lsp_preference == "pyrefly" then
-    -- Check if pyrefly is available globally
+    -- Check if pyrefly is available
     if vim.fn.executable("pyrefly") == 1 then
-      return "pyrefly"
-    end
-
-    -- Check if pyrefly is available in active virtual environment
-    local venv_python = os.getenv("VIRTUAL_ENV")
-    if venv_python then
-      local venv_pyrefly = venv_python .. "/bin/pyrefly"
-      if vim.fn.executable(venv_pyrefly) == 1 then
-        return "pyrefly"
-      end
-    end
-
-    -- Check project's .venv directory
-    local project_venv = vim.fn.getcwd() .. "/.venv/bin/pyrefly"
-    if vim.fn.executable(project_venv) == 1 then
       return "pyrefly"
     end
 
@@ -114,28 +99,6 @@ return {
             -- Disable hover in favor of pylsp
             client.server_capabilities.hoverProvider = false
           end, ruff)
-        end,
-        pyrefly = function(_, opts)
-          -- Dynamically set the command at setup time
-          local function get_pyrefly_cmd()
-            local venv_python = os.getenv("VIRTUAL_ENV")
-            if venv_python then
-              local venv_pyrefly = venv_python .. "/bin/pyrefly"
-              if vim.fn.executable(venv_pyrefly) == 1 then
-                return { venv_pyrefly, "lsp" }
-              end
-            end
-
-            local project_venv = vim.fn.getcwd() .. "/.venv/bin/pyrefly"
-            if vim.fn.executable(project_venv) == 1 then
-              return { project_venv, "lsp" }
-            end
-
-            return { "pyrefly", "lsp" }
-          end
-
-          opts.cmd = get_pyrefly_cmd()
-          require("lspconfig").pyrefly.setup(opts)
         end,
       },
     },

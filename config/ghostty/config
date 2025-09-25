@@ -1,5 +1,5 @@
 font-family = "JetBrainsMono Nerd Font Mono"
 font-size   = 16
-theme = dark:tokyonight,light:tokyonight-day
+theme = dark:TokyoNight,light:TokyoNight Day
 macos-option-as-alt = true
 keybind = shift+enter=text:\n
