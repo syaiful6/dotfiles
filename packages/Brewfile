@@ -12,6 +12,9 @@ brew "fzf"
 brew "jq"
 brew "htop"
 
+tap "timothyye/tap"
+brew "timothyye/tap/skm"
+
 # Build tools and utilities
 brew "make"
 brew "cmake"
@@ -21,10 +24,10 @@ brew "pkg-config"
 brew "gnupg"
 brew "pinentry-mac"
 
-# Terminal emulator
+# GUI applications and fonts 
 cask "ghostty"
+cask "obs"
+cask "1password"
 
-# Fonts
-tap "homebrew/cask-fonts"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-fira-code-nerd-font"
