@@ -45,7 +45,7 @@ ZSH_THEME="robbyrussell"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -68,7 +68,13 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git direnv)
+plugins=(
+  git
+  direnv
+  docker
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
 
 
 # User configuration
@@ -100,6 +106,32 @@ plugins=(git direnv)
 source ~/.bashrc.force
 
 source $ZSH/oh-my-zsh.sh
+
+# Enhanced zsh completion configuration
+autoload -Uz compinit
+compinit
+
+# Case insensitive completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+
+# Enable menu selection for completion
+zstyle ':completion:*' menu select
+
+# Use colors in completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# Group matches and describe
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
+
+# Completion for kill command
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+
+# SSH hostnames completion
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 if [[ -e "$HOME/.local/share/../bin/env" ]] ; then
   . "$HOME/.local/share/../bin/env"
