@@ -1,0 +1,30 @@
+{
+  "name": "sbahri-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "python",
+        "path": "./python/python.json"
+      },
+      {
+        "language": "python",
+        "path": "./python/unittest.json"
+      },
+      {
+        "language": [
+          "ocaml",
+          "ocamlinterface"
+        ],
+        "path": "./ocaml/ocaml.json"
+      },
+      {
+        "language": "dune",
+        "path": "./ocaml/dune.json"
+      },
+      {
+        "language": "dune-project",
+        "path": "./ocaml/dune-project.json"
+      }
+    ]
+  }
+}
