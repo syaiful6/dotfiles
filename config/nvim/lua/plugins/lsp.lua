@@ -26,6 +26,10 @@ return {
         -- enabled = true,
       },
       servers = {
+        ["harper-ls"] = {
+          cmd = { "harper-ls", "--stdio" },
+          root_markers = { ".git" },
+        },
         yamlls = {},
         tsserver = {
           -- Need to disable this cuz `Inline Edit` won't work otherwise

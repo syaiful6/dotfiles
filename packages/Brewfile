@@ -19,6 +19,7 @@ brew "timothyye/tap/skm"
 brew "make"
 brew "cmake"
 brew "pkg-config"
+brew "harper"
 
 # GPG for commit signing
 brew "gnupg"
