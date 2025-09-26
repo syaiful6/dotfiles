@@ -125,6 +125,18 @@ _sbdot_pkg_lang() {
     curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
   fi
 
+  # install opam
+  if ! command -v opam &>/dev/null; then
+    echo -e "${_sbdot_yellow}Installing OCaml (opam)...${_sbdot_nc}"
+    curl -fsSL https://opam.ocaml.org/install.sh | sh
+  fi
+
+  # Use uv to manage python version and projects
+  if ! command -v uv &>/dev/null; then
+    echo -e "${_sbdot_yellow}Installing uv (Python version manager)...${_sbdot_nc}"
+    curl -LsSf https://uv.vc/install.sh | bash
+  fi
+
   echo -e "${_sbdot_green}✅ Language toolchains installed${_sbdot_nc}"
 }
 

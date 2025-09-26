@@ -2,6 +2,7 @@
 git
 neovim
 tmux
+zsh
 
 # Modern CLI utilities
 ripgrep
