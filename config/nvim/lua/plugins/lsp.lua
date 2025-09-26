@@ -1,3 +1,10 @@
+--- Css and HTML language server need to be installed manually
+--- it coming from `vscode-langservers-extracted`
+---
+--- ```sh
+--- npm i -g vscode-langservers-extracted
+--- ```
+
 ---@diagnostic disable: missing-fields
 return {
   -- Customize LSP
@@ -27,6 +34,15 @@ return {
       },
       servers = {
         yamlls = {},
+        css = {
+          cmd = { "vscode-css-language-server", "--stdio" },
+          filetypes = { "css", "scss", "less" },
+          root_markers = { "package.json", ".git" },
+        },
+        html = {
+          cmd = { "vscode-html-language-server", "--stdio" },
+          filetypes = { "html", "django-html", "htmldjango", "templ" },
+        },
         tsserver = {
           -- Need to disable this cuz `Inline Edit` won't work otherwise
           -- single_file_support = false,
@@ -72,6 +88,26 @@ return {
             },
           },
         },
+      },
+      setup = {
+        css = function()
+          if vim.lsp.config.css then
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities.textDocument.completion.completionItem.snippetSupport = true
+            vim.lsp.config("css", {
+              capabilities = capabilities,
+            })
+          end
+        end,
+        html = function()
+          if vim.lsp.config.html then
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities.textDocument.completion.completionItem.snippetSupport = true
+            vim.lsp.config("html", {
+              capabilities = capabilities,
+            })
+          end
+        end,
       },
     },
     dependencies = {
