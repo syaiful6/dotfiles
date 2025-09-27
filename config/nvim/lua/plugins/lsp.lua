@@ -55,17 +55,16 @@ return {
       vim.g.rustaceanvim = {
         server = vim.tbl_deep_extend("force", {
           capabilities = Lsp.capabilities,
-          on_attach = function(client, bufnr)
-            vim.keymap.set(
-              "n",
-              "<leader>cD",
-              vim.lsp.buf.document_symbol,
-              { buffer = bufnr, desc = "Document Symbols" }
-            )
-            Lsp.on_attach(client, bufnr)
-          end,
+          on_attach = Lsp.on_attach,
         }, opts.servers.rust_analyzer or {}),
       }
+
+      opts.servers["harper-ls"] = vim.tbl_deep_extend("force", {
+        cmd = { "harper-ls", "--stdio" },
+        root_markers = { ".git" },
+        capabilities = Lsp.capabilities,
+        on_attach = Lsp.on_attach,
+      }, opts.servers["harper-ls"] or {})
 
       vim.diagnostic.config({ virtual_text = true })
 
