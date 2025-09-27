@@ -1,3 +1,5 @@
+local Lsp = require("sbahri.lsp")
+
 local ocaml_ft = {
   "dune",
   "ocaml",
@@ -24,8 +26,10 @@ return {
     },
     opts = {
       lsp = {
-        on_attach = function(_, bufnr)
+        capabilities = Lsp.capabilties,
+        on_attach = function(client, bufnr)
           vim.keymap.set("n", "<leader>cD", vim.lsp.buf.document_symbol, { buffer = bufnr, desc = "Document Symbols" })
+          Lsp.on_attach(client, bufnr)
         end,
       },
     },

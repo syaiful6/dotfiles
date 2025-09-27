@@ -1,3 +1,5 @@
+local Lsp = require("sbahri.lsp")
+
 if lazyvim_docs then
   -- LSP Server to use for Python.
   -- Options: "pyrefly", "pylsp", "pyright", "basedpyright"
@@ -68,8 +70,13 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        pyrefly = {},
+        pyrefly = {
+          capabilities = Lsp.capabilities,
+          on_attach = Lsp.on_attach,
+        },
         pylsp = {
+          capabilities = Lsp.capabilities,
+          on_attach = Lsp.on_attach,
           settings = {
             pylsp = {
               plugins = {
@@ -92,6 +99,8 @@ return {
         },
         ruff = {
           cmd_env = { RUFF_TRACE = "messages" },
+          capabilities = Lsp.capabilities,
+          on_attach = Lsp.on_attach,
           init_options = {
             settings = {
               logLevel = "error",

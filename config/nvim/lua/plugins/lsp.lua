@@ -4,148 +4,75 @@
 --- ```sh
 --- npm i -g vscode-langservers-extracted
 --- ```
+local Lsp = require("sbahri.lsp")
 
 ---@diagnostic disable: missing-fields
 return {
-  -- Customize LSP
   {
     "neovim/nvim-lspconfig",
-    -- Add, change or remove keymaps
-    init = function()
-      -- disable lsp watcher. Too slow on linux
-      local ok, wf = pcall(require, "vim.lsp._watchfiles")
-      if ok then
-        wf._watchfunc = function()
-          return function() end
-        end
-      end
-    end,
-    opts = {
-      diagnostics = {
-        virtual_text = {
-          prefix = "icons",
-          spacing = 4,
-          source = "if_many",
-        },
-        -- virtual_text = false,
-      },
-      inlay_hints = {
-        -- enabled = true,
-      },
-      servers = {
-        yamlls = {},
-        css = {
-          cmd = { "vscode-css-language-server", "--stdio" },
-          filetypes = { "css", "scss", "less" },
-          root_markers = { "package.json", ".git" },
-        },
-        html = {
-          cmd = { "vscode-html-language-server", "--stdio" },
-          filetypes = { "html", "django-html", "htmldjango", "templ" },
-        },
-        tsserver = {
-          -- Need to disable this cuz `Inline Edit` won't work otherwise
-          -- single_file_support = false,
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "literal",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = false,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "all",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-          },
-        },
-        lua_ls = {
-          settings = {
-            Lua = {
-              diagnostics = {
-                -- disable = { "missing-parameter" },
-              },
-              hint = {
-                enable = true,
-                setType = true,
-                paramType = true,
-                paramName = "All",
-                semicolon = "Disable",
-                arrayIndex = "Disable",
-              },
-            },
-          },
-        },
-      },
-      setup = {
-        css = function()
-          if vim.lsp.config.css then
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities.textDocument.completion.completionItem.snippetSupport = true
-            vim.lsp.config("css", {
-              capabilities = capabilities,
-            })
-          end
-        end,
-        html = function()
-          if vim.lsp.config.html then
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities.textDocument.completion.completionItem.snippetSupport = true
-            vim.lsp.config("html", {
-              capabilities = capabilities,
-            })
-          end
-        end,
-      },
-    },
+    lazy = false,
     dependencies = {
+      { "mason-org/mason.nvim", config = true },
+      "mason-org/mason-lspconfig.nvim",
       {
-        "SmiteshP/nvim-navbuddy",
-        lazy = true,
-        dependencies = {
-          "SmiteshP/nvim-navic",
-          "MunifTanjim/nui.nvim",
-        },
-        opts = { lsp = { auto_attach = true } },
-        keys = {
-          { "<leader>cln", "<cmd>Navbuddy<cr>", desc = "Lsp Navigation" },
-        },
-      },
-
-      {
-        "simrat39/symbols-outline.nvim",
-        lazy = true,
-        keys = {
-          { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" },
-        },
+        "folke/lazydev.nvim",
+        ft = "lua",
         opts = {
-          width = 35,
-          autofold_depth = 2,
+          library = {
+            { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+          },
         },
       },
-
-      -- Pretty hover
       {
-        "Fildo7525/pretty_hover",
+        "aznhe21/actions-preview.nvim",
+        event = "LspAttach",
+        opts = {
+          diff = {
+            algorithm = "patience",
+            ignore_whitespace = true,
+          },
+        },
+      },
+      {
+        "rachartier/tiny-code-action.nvim",
+        dependencies = {
+          { "nvim-lua/plenary.nvim" },
+          { "folke/snacks.nvim", opts = { terminal = {} } },
+        },
         event = "LspAttach",
         opts = {},
       },
     },
-  },
+    opts = function(_, opts)
+      -- add servers
+      local servers = { "cssls", "html", "jsonls", "tsserver", "lua_ls", "bashls", "yamlls" }
+      for _, server in ipairs(servers) do
+        opts.servers[server] = opts.servers[server] or {}
+        opts.servers[server].capabilities = Lsp.capabilities
+        opts.servers[server].on_attach = Lsp.on_attach
+      end
 
-  -- Modify `null-ls`
+      vim.g.rustaceanvim = {
+        server = vim.tbl_deep_extend("force", {
+          capabilities = Lsp.capabilities,
+          on_attach = function(client, bufnr)
+            vim.keymap.set(
+              "n",
+              "<leader>cD",
+              vim.lsp.buf.document_symbol,
+              { buffer = bufnr, desc = "Document Symbols" }
+            )
+            Lsp.on_attach(client, bufnr)
+          end,
+        }, opts.servers.rust_analyzer or {}),
+      }
+
+      vim.diagnostic.config({ virtual_text = true })
+
+      return opts
+    end,
+  },
+  -- -- Modify `null-ls`
   {
     "nvimtools/none-ls.nvim",
     init = function()
