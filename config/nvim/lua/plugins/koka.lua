@@ -1,10 +1,17 @@
+local Lsp = require("sbahri.lsp")
+
 return {
   {
     "syaiful6/koka.nvim",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
-    opts = {},
+    opts = {
+      lsp = {
+        on_attach = Lsp.on_attach,
+        capabilities = Lsp.capabilities,
+      },
+    },
     config = function(_, opts)
       -- copy opts to kokanvim global
       vim.g.kokanvim = vim.tbl_deep_extend("keep", vim.g.kokanvim or {}, opts or {})
