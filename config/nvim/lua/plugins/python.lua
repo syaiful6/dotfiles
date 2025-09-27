@@ -146,7 +146,7 @@ return {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
       local lsp = get_python_lsp()
-      local servers = { "pyrefly", "pyright", "basedpyright", "pylsp", "ruff", "ruff_lsp", ruff, lsp }
+      local servers = { "pyrefly", "pyright", "basedpyright", "pylsp", "ruff" }
       for _, server in ipairs(servers) do
         opts.servers[server] = opts.servers[server] or {}
         opts.servers[server].enabled = server == lsp or server == ruff

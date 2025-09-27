@@ -18,6 +18,7 @@ make
 cmake
 pkg-config
 base-devel
+harper
 
 # GPG for commit signing
 gnupg
