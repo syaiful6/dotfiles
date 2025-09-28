@@ -1,4 +1,5 @@
 local Lsp = require("sbahri.lsp")
+local Python = require("sbahri.python")
 
 if lazyvim_docs then
   -- LSP Server to use for Python.
@@ -23,27 +24,6 @@ local function get_python_lsp()
   end
 
   return lsp_preference
-end
-
-local function get_venv_tool(command)
-  local venv_python = os.getenv("VIRTUAL_ENV")
-  if venv_python then
-    local venv_cmd = venv_python .. "/bin/" .. command
-    if vim.fn.executable(venv_cmd) == 1 then
-      return venv_cmd
-    end
-  end
-
-  local project_venv = vim.fn.getcwd() .. "/.venv/bin/" .. command
-  if vim.fn.executable(project_venv) == 1 then
-    return project_venv
-  end
-
-  if vim.fn.executable(command) == 1 then
-    return command
-  end
-
-  return nil
 end
 
 local ruff = vim.g.lazyvim_python_ruff or "ruff"
@@ -132,7 +112,7 @@ return {
           end, ruff)
         end,
         pyrefly = function()
-          local command = get_venv_tool("pyrefly")
+          local command = Python.get_venv_tool("pyrefly")
           if vim.lsp.config.pyrefly and command then
             vim.lsp.config("pyrefly", {
               cmd = { command, "lsp" },
