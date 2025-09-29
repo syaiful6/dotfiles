@@ -121,6 +121,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-t = 'workspace T'
     alt-s = 'workspace S'
     alt-o = 'workspace O'
+    alt-z = 'workspace Z'
 
     alt-shift-1 = 'move-node-to-workspace 1'
     alt-shift-2 = 'move-node-to-workspace 2'
@@ -135,6 +136,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-t = 'move-node-to-workspace T'
     alt-shift-s = 'move-node-to-workspace S'
     alt-shift-o = 'move-node-to-workspace O'
+    alt-shift-z = 'move-node-to-workspace Z'
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
@@ -145,6 +147,12 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-space = 'mode launcher'
 
     ctrl-alt-backspace = ['close-all-windows-but-current', 'close']
+    ctrl-alt-f = 'fullscreen'
+
+    alt-shift-up = 'swap up'
+    alt-shift-down = 'swap down'
+    alt-shift-left = 'swap left'
+    alt-shift-right = 'swap right'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -169,9 +177,12 @@ automatically-unhide-macos-hidden-apps = false
 [mode.launcher.binding]
   esc = 'mode main'
   alt-b = 'exec-and-forget open -n "/Applications/Google Chrome.app"'
+  alt-c = 'exec-and-forget open -a "/System/Applications/Calendar.app"'
   alt-d = 'exec-and-forget open -a "/Applications/Docker.app"'
   alt-s = 'exec-and-forget open -a "/Applications/Slack.app"'
   alt-slash = 'exec-and-forget open -a "/Applications/1Password.app'
+  alt-o = 'exec-and-forget open -a "/Applications/OBS.app"'
+  alt-z = 'exec-and-forget open -a "/Applications/zoom.us.app"'
 
 # send application to specific workspace on launch
 [[on-window-detected]]
@@ -185,3 +196,7 @@ run = 'move-node-to-workspace B'
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
 run = 'move-node-to-workspace T'
+
+[[on-window-detected]]
+if.app-id = 'us.zoom.xos'
+run = 'move-node-to-workspace Z'
