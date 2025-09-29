@@ -15,6 +15,10 @@ brew "htop"
 tap "timothyye/tap"
 brew "timothyye/tap/skm"
 
+# tiling window manager
+tap "nikitabobko/tap"
+cask "nikitabobko/tap/aerospace"
+
 # Build tools and utilities
 brew "make"
 brew "cmake"
