@@ -177,9 +177,6 @@ return {
     "linux-cultist/venv-selector.nvim",
     branch = "main",
     cmd = "VenvSelect",
-    enabled = function()
-      return LazyVim.has("telescope.nvim")
-    end,
     opts = {
       settings = {
         options = {

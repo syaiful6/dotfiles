@@ -1,6 +1,4 @@
-local null_ls = require("null-ls")
-local helpers = require("null-ls.helpers")
-local utils = require("null-ls.utils")
+local LspUtil = require("lspconfig.util")
 
 local M = {}
 
@@ -27,66 +25,73 @@ function M.get_venv_tool(command)
   return nil
 end
 
---- prospector diagnostics generator to be used with null-ls
-M.prospector = {
-  name = "prospector",
-  meta = {
-    url = "https://prospector.landscape.io/en/master/",
-    description = [[
-Prospector is a tool to analyze Python code and output information about errors,
-potential problems, convention violations and complexity.
+local prospector_root_dir = LspUtil.root_pattern(
+  "manage.py", -- django use manage.py as root
+  "prospector.yaml",
+  "pyproject.toml",
+  "setup.py",
+  "setup.cfg",
+  "requirements.txt",
+  "Pipfile",
+  "pyrightconfig.json"
+)
 
-It brings together the functionality of other Python analysis tools such as
-pylint, pyflakes, mccabe, pep8 and others.
-]],
-  },
-  method = null_ls.methods.DIAGNOSTICS,
-  filetypes = { "python" },
-  generator = null_ls.generator({
-    command = function()
-      return M.get_venv_tool("prospector") or "prospector"
-    end,
-    args = { "-F", "--no-autodetect", "--output-format", "json", "$FILENAME" },
-    env = { "PYTHONWARNING=ignore", },
-    format = "json",
-    ignore_stderr = true,
-    check_exit_code = function(code)
-      return code ~= 32
-    end,
-    on_output = function(params)
-      local output = params.output
-      if not output or not output.messages then
-        return nil
+M.prospector = function()
+  local fname = vim.api.nvim_buf_get_name(0)
+  local path = prospector_root_dir(fname)
+  local envs = { PYTHONWARNING = "ignore", ["DJANGO_SETTINGS_MODULE"] = "settings" }
+  local current_python_path = vim.fn.getenv("PYTHONPATH")
+  -- Convert userdata to string if needed
+  current_python_path = current_python_path and tostring(current_python_path) or ""
+  if current_python_path ~= "" then
+    envs["PYTHONPATH"] = path .. ":" .. current_python_path
+  else
+    envs["PYTHONPATH"] = path
+  end
+
+  return {
+    cmd = M.get_venv_tool("python") or "python",
+    args = {
+      "-F",
+      "--output-format",
+      "json",
+      function()
+        return vim.api.nvim_buf_get_name(0)
+      end,
+    },
+    cwd = path,
+    env = envs,
+    stdin = false,
+    stream = "stdout",
+    ignore_exitcode = true,
+    parser = function(output)
+      if output == nil or output == "" then
+        return {}
       end
       local diagnostics = {}
-      local messages = output.messages or {}
-      for _, json_diag in ipairs(messages) do
+      local ok, decoded = pcall(vim.fn.json_decode, output)
+      if not ok then
+        return {}
+      end
+      for _, json_diag in ipairs(decoded.messages or {}) do
         local location = json_diag.location or {}
+        local line = location.line ~= vim.NIL and (location.line - 1) or 1
+        local column = location.character ~= vim.NIL and location.character or 1
         local entries = {
           source = json_diag.source or "prospector",
           code = json_diag.code,
-          severity = 2, -- not sure, prospector doesn't provide severity
+          severity = vim.diagnostic.severity.WARN, -- not sure, prospector doesn't provide severity
           message = json_diag.message,
-          row = location.line ~= vim.NIL and location.line or 1,
-          col = location.character ~= vim.NIL and location.character or 1,
+          lnum = line,
+          col = column,
+          end_lnum = line,
+          end_col = column,
         }
         table.insert(diagnostics, entries)
       end
       return diagnostics
     end,
-    cwd = helpers.cache.by_bufnr(function(params)
-      return utils.root_pattern(
-        "manage.py", -- django use manage.py as root
-        "prospector.yaml",
-        "pyproject.toml",
-        "setup.py",
-        "setup.cfg",
-        "requirements.txt",
-        "Pipfile",
-        "pyrightconfig.json"
-      )(params.bufname)
-    end),
-  }),
-}
+  }
+end
 
 return M

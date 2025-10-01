@@ -1,5 +1,5 @@
 local M = {}
-local builtins = require("telescope.builtin")
+local Picker = require("snacks")
 
 function M.on_attach(client, bufnr)
   local lsp_keymap = function(keys, func, desc)
@@ -22,10 +22,10 @@ function M.on_attach(client, bufnr)
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { bufnr })
   end, "Lsp toggle inlay [h]ints")
 
-  lsp_keymap("gD", builtins.lsp_definitions, "Goto Declaration")
-  lsp_keymap("gi", builtins.lsp_implementations, "Goto Implementation")
-  lsp_keymap("gr", builtins.lsp_references, "References")
-  lsp_keymap("<D-l>", builtins.lsp_workspace_symbols, "Search workspace symbols")
+  lsp_keymap("gD", Snacks.picker.lsp_definitions, "Goto Declaration")
+  lsp_keymap("gi", Snacks.picker.lsp_implementations, "Goto Implementation")
+  lsp_keymap("gr", Snacks.picker.lsp_references, "References")
+  lsp_keymap("<D-l>", Snacks.picker.lsp_workspace_symbols, "Search workspace symbols")
 end
 
 -- extend capabilities to support nvim-cmp, broadcast that to servers
