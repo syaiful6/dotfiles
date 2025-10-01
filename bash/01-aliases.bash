@@ -3,5 +3,5 @@ alias gp='git push'
 alias gpo='git push origin'
 alias gl='git pull'
 alias glo='git pull origin'
-alias for tmux
-tmux="TERM=screen-256color-bce tmux"
+alias v='nvim'
+alias tmux="TERM=screen-256color-bce tmux"
