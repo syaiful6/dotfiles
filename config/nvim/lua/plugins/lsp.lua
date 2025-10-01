@@ -5,9 +5,21 @@
 --- npm i -g vscode-langservers-extracted
 --- ```
 local Lsp = require("sbahri.lsp")
+local Python = require("sbahri.python")
 
 ---@diagnostic disable: missing-fields
 return {
+  {
+    "mfussenegger/nvim-lint",
+    opts = {
+      linters_by_ft = {
+        python = { "prospector" },
+      },
+      linters = {
+        ["prospector"] = Python.prospector,
+      },
+    },
+  },
   {
     "neovim/nvim-lspconfig",
     lazy = false,
@@ -69,29 +81,6 @@ return {
       vim.diagnostic.config({ virtual_text = true })
 
       return opts
-    end,
-  },
-  -- -- Modify `null-ls`
-  {
-    "nvimtools/none-ls.nvim",
-    init = function()
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(args)
-          local bufnr = args.buf
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if client and client.name == "null-ls" then
-            vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>cn", "<cmd>NullLsInfo<cr>", { desc = "NullLs Info" })
-          end
-        end,
-      })
-    end,
-    opts = function(_, opts)
-      local nls = require("null-ls")
-      local python = require("sbahri.python")
-      nls.register(python.prospector)
-      opts.sources = vim.list_extend(opts.sources, {
-        nls.builtins.code_actions.gitsigns,
-      })
     end,
   },
 }
