@@ -134,7 +134,7 @@ _sbdot_pkg_lang() {
   # Use uv to manage python version and projects
   if ! command -v uv &>/dev/null; then
     echo -e "${_sbdot_yellow}Installing uv (Python version manager)...${_sbdot_nc}"
-    curl -LsSf https://uv.vc/install.sh | bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
   fi
 
   echo -e "${_sbdot_green}✅ Language toolchains installed${_sbdot_nc}"
