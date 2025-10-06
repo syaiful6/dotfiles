@@ -36,6 +36,34 @@ local prospector_root_dir = LspUtil.root_pattern(
   "pyrightconfig.json"
 )
 
+local prospector_parser = function(output)
+  if output == nil or output == "" then
+    return {}
+  end
+  local diagnostics = {}
+  local ok, decoded = pcall(vim.fn.json_decode, output)
+  if not ok then
+    return {}
+  end
+  for _, json_diag in ipairs(decoded.messages or {}) do
+    local location = json_diag.location or {}
+    local line = location.line ~= vim.NIL and (location.line - 1) or 1
+    local column = location.character ~= vim.NIL and location.character or 1
+    local entries = {
+      source = json_diag.source or "prospector",
+      code = json_diag.code,
+      severity = vim.diagnostic.severity.WARN, -- not sure, prospector doesn't provide severity
+      message = json_diag.message,
+      lnum = line,
+      col = column,
+      end_lnum = line,
+      end_col = column,
+    }
+    table.insert(diagnostics, entries)
+  end
+  return diagnostics
+end
+
 M.prospector = function()
   local fname = vim.api.nvim_buf_get_name(0)
   local path = prospector_root_dir(fname)
@@ -50,7 +78,7 @@ M.prospector = function()
   end
 
   return {
-    cmd = M.get_venv_tool("python") or "python",
+    cmd = M.get_venv_tool("prospector") or "prospector",
     args = {
       "-F",
       "--output-format",
@@ -64,32 +92,10 @@ M.prospector = function()
     stdin = false,
     stream = "stdout",
     ignore_exitcode = true,
-    parser = function(output)
-      if output == nil or output == "" then
-        return {}
-      end
-      local diagnostics = {}
-      local ok, decoded = pcall(vim.fn.json_decode, output)
-      if not ok then
-        return {}
-      end
-      for _, json_diag in ipairs(decoded.messages or {}) do
-        local location = json_diag.location or {}
-        local line = location.line ~= vim.NIL and (location.line - 1) or 1
-        local column = location.character ~= vim.NIL and location.character or 1
-        local entries = {
-          source = json_diag.source or "prospector",
-          code = json_diag.code,
-          severity = vim.diagnostic.severity.WARN, -- not sure, prospector doesn't provide severity
-          message = json_diag.message,
-          lnum = line,
-          col = column,
-          end_lnum = line,
-          end_col = column,
-        }
-        table.insert(diagnostics, entries)
-      end
-      return diagnostics
+    parser = prospector_parser,
+    condition = function()
+      local cmd = M.get_venv_tool("prospector") or "prospector"
+      return vim.fn.executable(cmd) == 1
     end,
   }
 end

@@ -1,5 +1,4 @@
 local M = {}
-local Picker = require("snacks")
 
 function M.on_attach(client, bufnr)
   local lsp_keymap = function(keys, func, desc)
@@ -26,6 +25,24 @@ function M.on_attach(client, bufnr)
   lsp_keymap("gi", Snacks.picker.lsp_implementations, "Goto Implementation")
   lsp_keymap("gr", Snacks.picker.lsp_references, "References")
   lsp_keymap("<D-l>", Snacks.picker.lsp_workspace_symbols, "Search workspace symbols")
+
+  if client.name == "ocamllsp" then
+    lsp_keymap("gn", ":OCaml phrase next<cr>", "Jumps to next phrase")
+    lsp_keymap("gN", ":OCaml phrase prev<cr>", "Jumps to previous phrase")
+    lsp_keymap("ghn", ":OCaml jump-hole next<cr>", "Jumps to next hole")
+    lsp_keymap("ghN", ":OCaml jump-hole prev<cr>", "Jumps to previous hole")
+    lsp_keymap("<leader>m", ":OCaml jump<cr>", "Merlin jumps")
+    lsp_keymap("gml", ":OCaml jump let<cr>", "Jumps to the beginning of the let")
+    lsp_keymap("gmf", ":OCaml jump fun<cr>", "Jumps to the beginning of the function")
+    lsp_keymap("gmm", ":OCaml jump module<cr>", "Jumps to the beginning of the current module")
+    lsp_keymap("gms", ":OCaml jump match<cr>", "Jumps to the beginning of the current match")
+    lsp_keymap("gmb", ":OCaml jump match-next-case<cr>", "Jumps to the beginning of the next case in the current match")
+    lsp_keymap(
+      "gmc",
+      ":OCaml jump match-prev-case<cr>",
+      "Jumps to the beginning of the previous case in the current match"
+    )
+  end
 end
 
 -- extend capabilities to support nvim-cmp, broadcast that to servers
