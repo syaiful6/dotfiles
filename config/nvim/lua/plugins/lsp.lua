@@ -17,6 +17,12 @@ return {
       linters_by_ft = {
         fish = { "fish" },
         python = { "prospector" },
+        markdown = { "markdownlint" },
+        typescript = { "eslint" },
+        javascript = { "eslint" },
+        typescriptreact = { "eslint" },
+        javascriptreact = { "eslint" },
+        lua = { "luacheck" },
       },
       linters = {
         ["prospector"] = Python.prospector,
@@ -80,6 +86,13 @@ return {
           if type(linter) == "function" then
             linter = linter()
           end
+          --- this is probably better in nvim-lint itself, let's check the command line is
+          --- actually available
+          local cmd = linter and (type(linter.cmd) == "function" and linter.cmd() or linter.cmd)
+          if vim.fn.executable(cmd or "") ~= 1 then
+            return false
+          end
+          --- normal check, LazyVim support condition field
           return linter and not (type(linter) == "table" and linter.condition and not linter.condition(ctx))
         end, names)
 

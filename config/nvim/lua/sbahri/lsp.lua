@@ -26,6 +26,15 @@ function M.on_attach(client, bufnr)
   lsp_keymap("gr", Snacks.picker.lsp_references, "References")
   lsp_keymap("<D-l>", Snacks.picker.lsp_workspace_symbols, "Search workspace symbols")
 
+  if client.name == "rust-analyzer" then
+    lsp_keymap("<leader>cR", function()
+      vim.cmd.RustLsp("codeAction")
+    end, "Code action")
+    lsp_keymap("<leader>dr", function()
+      vim.cmd.RustLsp("debuggables")
+    end, "Rust Debuggables")
+  end
+
   if client.name == "ocamllsp" then
     lsp_keymap("gn", ":OCaml phrase next<cr>", "Jumps to next phrase")
     lsp_keymap("gN", ":OCaml phrase prev<cr>", "Jumps to previous phrase")

@@ -1,17 +1,5 @@
 local Lsp = require("sbahri.lsp")
 
-local ocaml_ft = {
-  "dune",
-  "ocaml",
-  "ocaml.cram",
-  "ocaml.interface",
-  "ocaml.menhir",
-  "ocaml.mlx",
-  "ocaml.ocamllex",
-  "opam",
-  "reason",
-}
-
 return {
   recommended = function()
     return LazyVim.extras.wants({
@@ -38,7 +26,14 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        ocamllsp = false,
+        ocamllsp = { enable = false },
+      },
+      setup = {
+        -- Make sure lspconfig doesn't start ocamllsp,
+        -- as it conflicts with ocaml.nvim
+        ocamllsp = function()
+          return true
+        end,
       },
     },
   },

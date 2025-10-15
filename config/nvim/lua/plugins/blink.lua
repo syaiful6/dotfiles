@@ -1,9 +1,7 @@
 return {
-  { "giuxtaposition/blink-cmp-copilot" },
   {
     "saghen/blink.cmp",
     dependencies = {
-      { "giuxtaposition/blink-cmp-copilot" },
       {
         "L3MON4D3/LuaSnip",
         build = "make install_jsregexp",
@@ -29,43 +27,21 @@ return {
       },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
-        providers = {
-          copilot = {
-            name = "copilot",
-            module = "blink-cmp-copilot",
-            score_offset = 100,
-            async = true,
-          },
-        },
       },
-    },
-    specs = {
-      {
-        "zbirenbaum/copilot.lua",
-        optional = true,
-        specs = {
-          {
-            "saghen/blink.cmp",
-            optional = true,
-            opts = function(_, opts)
-              opts.sources = opts.sources or {}
-              opts.sources.default = opts.sources.default or {}
-              opts.sources.providers = opts.sources.providers or {}
-
-              -- Add copilot to default sources if copilot is available
-              if LazyVim.has("copilot.lua") then
-                table.insert(opts.sources.default, "copilot")
-              end
-
-              -- Configure copilot provider
-              opts.sources.providers.copilot = {
-                name = "copilot",
-                module = "blink-cmp-copilot",
-                score_offset = 100,
-                async = true,
-              }
-            end,
-          },
+      keymap = {
+        ["<Tab>"] = {
+          function(cmp)
+            if cmp.snippet_active() then
+              return cmp.accept()
+            else
+              return cmp.select_and_accept()
+            end
+          end,
+          "snippet_forward",
+          function()
+            return require("sidekick").nes_jump_or_apply()
+          end,
+          "fallback",
         },
       },
     },
