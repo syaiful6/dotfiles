@@ -38,8 +38,8 @@ function M.on_attach(client, bufnr)
   if client.name == "ocamllsp" then
     lsp_keymap("gn", ":OCaml phrase next<cr>", "Jumps to next phrase")
     lsp_keymap("gN", ":OCaml phrase prev<cr>", "Jumps to previous phrase")
-    lsp_keymap("ghn", ":OCaml jump-hole next<cr>", "Jumps to next hole")
-    lsp_keymap("ghN", ":OCaml jump-hole prev<cr>", "Jumps to previous hole")
+    lsp_keymap("gh", ":OCaml jump-hole next<cr>", "Jumps to next hole")
+    lsp_keymap("gH", ":OCaml jump-hole prev<cr>", "Jumps to previous hole")
     lsp_keymap("<leader>m", ":OCaml jump<cr>", "Merlin jumps")
     lsp_keymap("gml", ":OCaml jump let<cr>", "Jumps to the beginning of the let")
     lsp_keymap("gmf", ":OCaml jump fun<cr>", "Jumps to the beginning of the function")
@@ -51,6 +51,22 @@ function M.on_attach(client, bufnr)
       ":OCaml jump match-prev-case<cr>",
       "Jumps to the beginning of the previous case in the current match"
     )
+    lsp_keymap("<leader>ce", ":OCaml expand-ppx<CR>", "Expand PPX")
+    lsp_keymap("<leader>sp", ":OCaml type-search<CR>", "Show documentation")
+
+    -- selection
+    vim.keymap.set(
+      { "n", "x" },
+      "<D-l>",
+      ":OCaml type-enclosing<CR>",
+      { remap = true, silent = true, desc = "Select structure", buffer = bufnr }
+    )
+    vim.keymap.set(
+      { "n", "x" },
+      "<leader>cv",
+      ":OCaml select-ast<CR>",
+      { remap = true, silent = true, desc = "Select AST node", buffer = bufnr }
+    )
   end
 end
 
@@ -59,7 +75,29 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false))
 -- disable for now, bug: https://github.com/neovim/neovim/issues/23291
 capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+capabilities = vim.tbl_deep_extend("force", capabilities, {
+  textDocument = {
+    completion = {
+      completionItem = {
+        resolveSupport = {
+          properties = {
+            "kind",
+            "diagnostics",
+            "isPreferred",
+            "disabled",
+            "edit",
+            "documentation",
+            "detail",
+            "additionalTextEdits",
+            "command",
+            "data",
+          },
+        },
+      },
+    },
+  },
+})
 
-M.capabilties = capabilities
+M.capabilities = capabilities
 
 return M
