@@ -15,7 +15,6 @@ local tmpl = {
   },
   builder = function(params)
     local sandbox = require("ocaml.sandbox")
-    vim.notify("Dune task builder called with params:" .. vim.inspect(params), vim.log.levels.DEBUG)
     return {
       cmd = sandbox.get_command(params.relative_file_root or params.cwd, { "dune" }),
       args = params.args,
