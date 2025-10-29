@@ -106,7 +106,7 @@ return {
       },
       setup = {
         [ruff] = function()
-          LazyVim.lsp.on_attach(function(client, _)
+          Snacks.util.lsp.on({ name = "ruff" }, function(_, client)
             -- Disable hover in favor of pylsp
             client.server_capabilities.hoverProvider = false
           end, ruff)
@@ -155,7 +155,7 @@ return {
       -- stylua: ignore
       keys = {
         { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
-        { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
+        { "<leader>dPc", function() require('dap-python').test_class() end,  desc = "Debug Class",  ft = "python" },
       },
       config = function()
         -- First try to use project's .venv, fallback to system debugpy

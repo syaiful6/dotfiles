@@ -34,16 +34,26 @@ return {
             components = {
               kind_icon = {
                 text = function(ctx)
+                  if ctx.kind_icon ~= nil then
+                    return ctx.kind_icon
+                  end
+
                   local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
                   return kind_icon
                 end,
                 highlight = function(ctx)
+                  if ctx.kind_hl == false then
+                    return false
+                  end
                   local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
                   return hl
                 end,
               },
               kind = {
                 highlight = function(ctx)
+                  if ctx.kind_hl == false then
+                    return false
+                  end
                   local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
                   return hl
                 end,
