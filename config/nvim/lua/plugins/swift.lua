@@ -12,9 +12,9 @@ return {
         sourcekit = {
           enabled = true,
           on_attach = Lsp.on_attach,
-          capabilities = Lsp.capabilities,
-        }
-      }
-    }
-  }
+          capabilities = Lsp.capabilities(),
+        },
+      },
+    },
+  },
 }

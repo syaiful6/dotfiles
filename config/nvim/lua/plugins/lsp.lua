@@ -148,13 +148,13 @@ return {
       local servers = { "cssls", "html", "jsonls", "tsserver", "lua_ls", "bashls", "yamlls" }
       for _, server in ipairs(servers) do
         opts.servers[server] = opts.servers[server] or {}
-        opts.servers[server].capabilities = Lsp.capabilities
+        opts.servers[server].capabilities = Lsp.capabilities()
         opts.servers[server].on_attach = Lsp.on_attach
       end
 
       vim.g.rustaceanvim = {
         server = vim.tbl_deep_extend("force", {
-          capabilities = Lsp.capabilities,
+          capabilities = Lsp.capabilities(),
           on_attach = Lsp.on_attach,
         }, opts.servers.rust_analyzer or {}),
       }
@@ -162,7 +162,7 @@ return {
       opts.servers["harper-ls"] = vim.tbl_deep_extend("force", {
         cmd = { "harper-ls", "--stdio" },
         root_markers = { ".git" },
-        capabilities = Lsp.capabilities,
+        capabilities = Lsp.capabilities(),
         on_attach = Lsp.on_attach,
       }, opts.servers["harper-ls"] or {})
 

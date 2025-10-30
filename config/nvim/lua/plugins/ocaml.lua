@@ -14,7 +14,7 @@ return {
     },
     opts = {
       lsp = {
-        capabilities = Lsp.capabilities,
+        capabilities = Lsp.capabilities(),
         on_attach = Lsp.on_attach,
       },
     },
