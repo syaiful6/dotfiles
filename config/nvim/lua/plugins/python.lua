@@ -1,5 +1,4 @@
 local Lsp = require("sbahri.lsp")
-local Python = require("sbahri.python")
 
 if lazyvim_docs then
   -- LSP Server to use for Python.
@@ -51,11 +50,11 @@ return {
     opts = {
       servers = {
         pyrefly = {
-          capabilities = Lsp.capabilities,
+          capabilities = Lsp.capabilities(),
           on_attach = Lsp.on_attach,
         },
         pylsp = {
-          capabilities = Lsp.capabilities,
+          capabilities = Lsp.capabilities(),
           on_attach = Lsp.on_attach,
           settings = {
             pylsp = {
@@ -79,7 +78,7 @@ return {
         },
         ruff = {
           cmd_env = { RUFF_TRACE = "messages" },
-          capabilities = Lsp.capabilities,
+          capabilities = Lsp.capabilities(),
           on_attach = Lsp.on_attach,
           init_options = {
             settings = {
@@ -112,6 +111,7 @@ return {
           end, ruff)
         end,
         pyrefly = function()
+          local Python = require("sbahri.python")
           local command = Python.get_venv_tool("pyrefly")
           if vim.lsp.config.pyrefly and command then
             vim.lsp.config("pyrefly", {

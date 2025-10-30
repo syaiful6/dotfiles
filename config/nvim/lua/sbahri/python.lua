@@ -1,4 +1,4 @@
-local LspUtil = require("lspconfig.util")
+local Helpers = require("sbahri.helpers")
 
 local M = {}
 
@@ -25,7 +25,7 @@ function M.get_venv_tool(command)
   return nil
 end
 
-local prospector_root_dir = LspUtil.root_pattern(
+local prospector_root_dir = Helpers.root_pattern(
   "manage.py", -- django use manage.py as root
   "prospector.yaml",
   "pyproject.toml",

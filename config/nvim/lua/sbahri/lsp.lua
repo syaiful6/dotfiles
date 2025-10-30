@@ -1,13 +1,17 @@
 local M = {}
 
 function M.on_attach(client, bufnr)
+  local Snacks = require("snacks")
+
   local lsp_keymap = function(keys, func, desc)
     if desc then
       desc = "LSP: " .. desc
     end
     vim.keymap.set("n", keys, func, { remap = true, buffer = bufnr, desc = desc, silent = true })
   end
-  lsp_keymap("<D-.>", require("tiny-code-action").code_action, "Code Action")
+  if not pcall(require, "tiny-code-action") then
+    lsp_keymap("<D-.>", require("tiny-code-action").code_action, "Code Action")
+  end
   lsp_keymap("K", function()
     if client.name == "rust-analyzer" then
       vim.cmd.RustLsp({ "hover", "actions" })
@@ -70,34 +74,37 @@ function M.on_attach(client, bufnr)
   end
 end
 
--- extend capabilities to support nvim-cmp, broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false))
--- disable for now, bug: https://github.com/neovim/neovim/issues/23291
-capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
-capabilities = vim.tbl_deep_extend("force", capabilities, {
-  textDocument = {
-    completion = {
-      completionItem = {
-        resolveSupport = {
-          properties = {
-            "kind",
-            "diagnostics",
-            "isPreferred",
-            "disabled",
-            "edit",
-            "documentation",
-            "detail",
-            "additionalTextEdits",
-            "command",
-            "data",
+function M.capabilities()
+  if not pcall(require, "blink.cmp") then
+    return vim.lsp.protocol.make_client_capabilities()
+  end
+  -- extend capabilities to support nvim-cmp, broadcast that to servers
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false))
+  -- disable for now, bug: https://github.com/neovim/neovim/issues/23291
+  capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+  capabilities = vim.tbl_deep_extend("force", capabilities, {
+    textDocument = {
+      completion = {
+        completionItem = {
+          resolveSupport = {
+            properties = {
+              "kind",
+              "diagnostics",
+              "isPreferred",
+              "disabled",
+              "edit",
+              "documentation",
+              "detail",
+              "additionalTextEdits",
+              "command",
+              "data",
+            },
           },
         },
       },
     },
-  },
-})
-
-M.capabilities = capabilities
+  })
+end
 
 return M
