@@ -42,12 +42,10 @@ return {
       local capabilities = Lsp.capabilities()
       local on_attach = Lsp.on_attach
 
-      -- Disable LSPs managed by their respective plugins
       vim.lsp.enable("ocamllsp", false)
       vim.lsp.enable("rust_analyzer", false)
       vim.lsp.enable("koka", false)
 
-      -- Configure and enable Lua Language Server
       vim.lsp.config("lua_ls", {
         cmd = { "lua-language-server" },
         root_markers = { ".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", "selene.toml", "selene.yml", ".git" },
@@ -67,7 +65,6 @@ return {
       })
       vim.lsp.enable("lua_ls")
 
-      -- Bash Language Server
       vim.lsp.config("bashls", {
         cmd = { "bash-language-server", "start" },
         root_markers = { ".git" },
@@ -76,7 +73,6 @@ return {
       })
       vim.lsp.enable("bashls")
 
-      -- JSON Language Server
       vim.lsp.config("jsonls", {
         cmd = { "vscode-json-language-server", "--stdio" },
         root_markers = { ".git" },
@@ -85,7 +81,6 @@ return {
       })
       vim.lsp.enable("jsonls")
 
-      -- TypeScript Server (ts_ls is the new name, not tsserver)
       vim.lsp.config("ts_ls", {
         cmd = { "typescript-language-server", "--stdio" },
         root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
@@ -94,16 +89,6 @@ return {
       })
       vim.lsp.enable("ts_ls")
 
-      -- Python (Pyright)
-      vim.lsp.config("pyright", {
-        cmd = { "pyright-langserver", "--stdio" },
-        root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git" },
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-      vim.lsp.enable("pyright")
-
-      -- Go Language Server
       vim.lsp.config("gopls", {
         cmd = { "gopls" },
         root_markers = { "go.work", "go.mod", ".git" },
@@ -112,7 +97,6 @@ return {
       })
       vim.lsp.enable("gopls")
 
-      -- CSS Language Server
       vim.lsp.config("cssls", {
         cmd = { "vscode-css-language-server", "--stdio" },
         root_markers = { "package.json", ".git" },
@@ -121,7 +105,6 @@ return {
       })
       vim.lsp.enable("cssls")
 
-      -- HTML Language Server
       vim.lsp.config("html", {
         cmd = { "vscode-html-language-server", "--stdio" },
         root_markers = { "package.json", ".git" },
@@ -141,20 +124,9 @@ return {
         severity_sort = true,
         float = {
           border = "rounded",
-          source = "always",
+          source = true,
         },
       })
-
-      local signs = {
-        Error = " ",
-        Warn = " ",
-        Hint = " ",
-        Info = " ",
-      }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-      end
     end,
   },
 }
