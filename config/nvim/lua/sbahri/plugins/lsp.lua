@@ -189,6 +189,13 @@ return {
             return on_dir(python_root_dir(vim.api.nvim_buf_get_name(bufnr)))
           end
         end,
+        on_exit = vim.schedule_wrap(function(code, _, _)
+          vim.notify(
+            "Closing Pyrefly LSP exited with code" .. code,
+            vim.log.levels.INFO,
+            { title = "LSP: pyrefly" }
+          )
+        end),
       })
       vim.lsp.enable("pyrefly")
 
