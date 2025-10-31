@@ -61,3 +61,9 @@ opt.ttyfast = true
 
 -- Mouse
 opt.mouse = "a"
+
+-- Folding
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldlevelstart = 99 -- Start with all folds open
+opt.foldenable = true

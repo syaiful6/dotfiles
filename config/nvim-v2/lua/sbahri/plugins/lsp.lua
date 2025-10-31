@@ -94,15 +94,6 @@ return {
       })
       vim.lsp.enable("ts_ls")
 
-      -- Python (Pyright)
-      vim.lsp.config("pyright", {
-        cmd = { "pyright-langserver", "--stdio" },
-        root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git" },
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-      vim.lsp.enable("pyright")
-
       -- Go Language Server
       vim.lsp.config("gopls", {
         cmd = { "gopls" },
@@ -141,20 +132,9 @@ return {
         severity_sort = true,
         float = {
           border = "rounded",
-          source = "always",
+          source = true,
         },
       })
-
-      local signs = {
-        Error = " ",
-        Warn = " ",
-        Hint = " ",
-        Info = " ",
-      }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-      end
     end,
   },
 }

@@ -185,5 +185,11 @@ return {
         desc = "Buffer Local Keymaps (which-key)"
       }
     }
-  }
+  },
+  {
+    "rcarriga/nvim-notify",
+    config = function()
+      vim.notify = require("notify")
+    end,
+  },
 }

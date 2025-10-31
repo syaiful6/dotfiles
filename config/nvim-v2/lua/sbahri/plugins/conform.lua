@@ -6,7 +6,7 @@ return {
     cmd = { "ConformInfo" },
     keys = {
       {
-        "<leader>f",
+        "<leader>cf",
         function()
           require("conform").format({ async = true, lsp_fallback = true })
         end,
@@ -17,7 +17,6 @@ return {
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
-        -- JavaScript/TypeScript
         javascript = { "eslint_d" },
         typescript = { "eslint_d" },
         javascriptreact = { "eslint_d" },
@@ -34,8 +33,6 @@ return {
         markdown = { "prettier" },
         php = { "php_cs_fixer" },
       },
-
-      -- Format on save configuration
       format_on_save = function(bufnr)
         -- Disable with a global or buffer-local variable
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
@@ -55,7 +52,8 @@ return {
         },
       },
     },
-    init = function()
+    config = function(_, opts)
+      require("conform").setup(opts)
       -- Format on save toggle commands
       vim.api.nvim_create_user_command("FormatDisable", function(args)
         if args.bang then
