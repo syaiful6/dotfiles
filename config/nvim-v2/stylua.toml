@@ -1,0 +1,6 @@
+indent = "Spaces"
+indent_width = 2
+line_endings = "Unix"
+quote_style = "AutoPreferSingle"
+call_parentheses = "NoSingleTable"
+collapse_simple_statement = "Never"

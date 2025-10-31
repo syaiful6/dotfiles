@@ -140,6 +140,63 @@ dotfiles/
 └── README.md               # This file
 ```
 
+## 🔗 Symlink Strategy
+
+This dotfiles repository uses **individual file symlinking** instead of whole-directory symlinks (like GNU Stow). This approach has unique advantages:
+
+### How It Works
+```bash
+# install.sh creates symlinks for individual files:
+dotfiles/bashrc        → ~/.bashrc
+dotfiles/config/nvim/init.lua → ~/.config/nvim/init.lua
+```
+
+### Key Benefits
+
+**✅ Mix Repo Files + Machine-Specific Files**
+```
+~/.config/nvim/
+├── init.lua           # Symlink to repo (version controlled)
+├── lua/
+│   ├── config.lua     # Symlink to repo (version controlled)
+│   └── local.lua      # Local file (machine-specific, not in repo)
+└── lazy-lock.json     # Local file (gitignored)
+```
+
+**✅ No Directory Ownership Conflicts**
+- Entire `~/.config/` directory isn't "owned" by dotfiles
+- Other applications can add their own configs to `~/.config/`
+- You can create machine-specific files alongside repo files
+
+**✅ Selective Version Control**
+- Choose exactly which files to track in git
+- Local experiments won't clutter the repo
+- Easy to test changes before committing
+
+### Comparison to GNU Stow
+
+| Feature | This Approach | GNU Stow |
+|---------|---------------|----------|
+| Symlink level | Individual files | Whole directories |
+| Mix repo + local files | ✅ Yes | ❌ No (directory is symlinked) |
+| Machine-specific configs | Easy to add | Need separate stow package |
+| Setup complexity | Simple script | Need stow installed |
+
+### Best Practices
+
+1. **Machine-specific configs**: Create files directly in `~/.config/app/` without adding to repo
+2. **Shared configs**: Add to dotfiles repo, `install.sh` will symlink them
+3. **Gitignore patterns**: Use `.gitignore` to exclude machine-specific files from repo
+
+**Example workflow:**
+```bash
+# Create machine-specific Neovim config
+echo "vim.g.local_setting = true" > ~/.config/nvim/lua/local-machine.lua
+
+# This file lives alongside symlinked files but isn't tracked in git
+# Your dotfiles repo stays clean!
+```
+
 ## 🔄 Common Workflows
 
 ### New Machine Setup
