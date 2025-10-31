@@ -22,6 +22,10 @@ return {
         ["."] = false,
       },
     },
+    config = function(_, opts)
+      require("copilot").setup(opts)
+      vim.lsp.enable("copilot")
+    end,
   },
   {
     "giuxtaposition/blink-cmp-copilot",
