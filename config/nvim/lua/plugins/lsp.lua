@@ -137,14 +137,13 @@ return {
         "rachartier/tiny-code-action.nvim",
         dependencies = {
           { "nvim-lua/plenary.nvim" },
-          { "folke/snacks.nvim", opts = { terminal = {} } },
+          { "folke/snacks.nvim",    opts = { terminal = {} } },
         },
         event = "LspAttach",
         opts = {},
       },
     },
     opts = function(_, opts)
-      -- add servers
       local servers = { "cssls", "html", "jsonls", "tsserver", "lua_ls", "bashls", "yamlls" }
       for _, server in ipairs(servers) do
         opts.servers[server] = opts.servers[server] or {}
@@ -159,12 +158,12 @@ return {
         }, opts.servers.rust_analyzer or {}),
       }
 
-      opts.servers["harper-ls"] = vim.tbl_deep_extend("force", {
-        cmd = { "harper-ls", "--stdio" },
-        root_markers = { ".git" },
-        capabilities = Lsp.capabilities(),
-        on_attach = Lsp.on_attach,
-      }, opts.servers["harper-ls"] or {})
+      -- opts.servers["harper-ls"] = vim.tbl_deep_extend("force", {
+      --   cmd = { "harper-ls", "--stdio" },
+      --   root_markers = { ".git" },
+      --   capabilities = Lsp.capabilities(),
+      --   on_attach = Lsp.on_attach,
+      -- }, opts.servers["harper-ls"] or {})
 
       vim.diagnostic.config({ virtual_text = true })
 
