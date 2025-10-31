@@ -1,4 +1,16 @@
 local Lsp = require("sbahri.lsp")
+local Helpers = require("sbahri.helpers")
+
+local python_root_dir = Helpers.root_pattern(
+  "pyproject.toml",
+  "pyrefly.toml",
+  "setup.py",
+  "setup.cfg",
+  "requirements.txt",
+  "Pipfile",
+  "pyrightconfig.json",
+  ".git"
+)
 
 return {
   {
@@ -39,6 +51,7 @@ return {
       },
     },
     config = function()
+      local Python = require("sbahri.python")
       local capabilities = Lsp.capabilities()
       local on_attach = Lsp.on_attach
 
@@ -108,6 +121,54 @@ return {
         on_attach = on_attach,
       })
       vim.lsp.enable("html")
+
+      vim.lsp.config("ruff", {
+        capabilities = capabilities,
+        filetypes = { "python" },
+        on_attach = function(client, bufnr)
+          -- disable hover in favor of pyrefly/basedpyright
+          client.server_capabilities.hoverProvider = false
+          on_attach(client, bufnr)
+        end,
+      })
+      vim.lsp.enable("ruff")
+
+      vim.lsp.config("pyrefly", {
+        cmd = { Python.get_venv_tool("pyrefly") or "pyrefly", "lsp" },
+        capabilities = capabilities,
+        filetypes = { "python" },
+        on_attach = on_attach,
+        root_dir = function(bufnr, on_dir)
+          if Python.get_venv_tool("pyrefly") ~= nil then
+            return on_dir(python_root_dir(vim.api.nvim_buf_get_name(bufnr)))
+          end
+        end,
+      })
+      vim.lsp.enable("pyrefly")
+
+      vim.lsp.config("basedpyright", {
+        enable = vim.fn.executable("pyrefly") == 0,
+        cmd = { "basedpyright-langserver", "--stdio" },
+        capabilities = capabilities,
+        filetypes = { "python" },
+        on_attach = Lsp.on_attach,
+        settings = {
+          basedpyright = {
+            analysis = {
+              typeCheckingMode = "standard",
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly",
+            },
+          },
+        },
+        root_dir = function(bufnr, on_dir)
+          if Python.get_venv_tool("pyrefly") == nil then
+            return on_dir(python_root_dir(vim.api.nvim_buf_get_name(bufnr)))
+          end
+        end,
+      })
+      vim.lsp.enable("basedpyright")
 
       vim.diagnostic.config({
         virtual_text = {
