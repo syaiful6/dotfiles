@@ -8,6 +8,18 @@ return {
         "L3MON4D3/LuaSnip",
         version = "v2.*",
         build = "make install_jsregexp",
+        config = function()
+          local luasnip = require("luasnip")
+          -- require("luasnip.loaders.from_vscode").lazy_load()
+          require("luasnip.loaders.from_vscode").lazy_load({ paths = "~/.config/nvim/snippets" })
+
+          luasnip.config.set_config({
+            region_check_events = "InsertEnter",
+            delete_check_events = "InsertLeave",
+          })
+
+          luasnip.config.setup({})
+        end,
       },
     },
     opts = {
