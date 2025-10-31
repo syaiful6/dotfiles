@@ -4,5 +4,5 @@ alias gpo='git push origin'
 alias gl='git pull'
 alias glo='git pull origin'
 alias v='nvim'
-alias zi='NVIM_APPNAME="nvim-v2" nvim'
+alias zi='nvim'
 alias tmux="TERM=screen-256color-bce tmux"
