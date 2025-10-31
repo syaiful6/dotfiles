@@ -12,6 +12,24 @@ local python_root_dir = Helpers.root_pattern(
   ".git"
 )
 
+local clangd_root_dir = Helpers.root_pattern(
+  ".clangd",
+  ".clang-tidy",
+  ".clang-format",
+  "compile_commands.json",
+  "compile_flags.json",
+  "configure.ac",
+  ".git"
+)
+
+--- Swift sourcekit can also handle c/c++ files, we want to use it
+--- when we actually are in a swift project
+local swift_root_dir = Helpers.root_pattern(
+  "Package.swift",
+  "swift.config",
+  ".git"
+)
+
 return {
   {
     "neovim/nvim-lspconfig",
@@ -90,13 +108,41 @@ return {
       })
       vim.lsp.enable("jsonls")
 
-      vim.lsp.config("ts_ls", {
-        cmd = { "typescript-language-server", "--stdio" },
-        root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+      vim.lsp.config("vtsls", {
         capabilities = capabilities,
         on_attach = on_attach,
+        settings = {
+          complete_function_calls = true,
+          vtsls = {
+            enableMoveToFileCodeAction = true,
+            autoUseWorkspaceTsdk = true,
+            experimental = {
+              maxInlayHintLength = 30,
+              completion = {
+                enableServerSideFuzzyMatch = true,
+              },
+            },
+          },
+          typescript = {
+            updateImportsOnFileMove = { enabled = "always" },
+            suggest = {
+              completeFunctionCalls = true,
+            },
+            inlayHints = {
+              enumMemberValues = { enabled = true },
+              functionLikeReturnTypes = { enabled = true },
+              parameterNames = { enabled = "literal" },
+              parameterTypes = { enabled = true },
+              propertyDeclarationTypes = { enabled = true },
+              variableTypes = { enabled = true },
+            },
+          }
+        }
       })
-      vim.lsp.enable("ts_ls")
+      vim.lsp.enable("vtsls")
+      -- disable all ts servers to use vtsls only
+      vim.lsp.enable("tsserver", false)
+      vim.lsp.enable("ts_ls", false)
 
       vim.lsp.config("gopls", {
         cmd = { "gopls" },
@@ -169,6 +215,29 @@ return {
         end,
       })
       vim.lsp.enable("basedpyright")
+
+      -- C/C++ LSP
+      vim.lsp.config("clangd", {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        root_dir = function(bufnr, on_dir)
+          if not vim.fs.find("Package.swift", { path = vim.api.nvim_buf_get_name(bufnr), upward = true })[1] then
+            return on_dir(clangd_root_dir(vim.api.nvim_buf_get_name(bufnr)))
+          end
+        end,
+      })
+      vim.lsp.enable("clangd")
+
+      vim.lsp.config("sourcekit", {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        root_dir = function(bufnr, on_dir)
+          if vim.fs.find("Package.swift", { path = vim.api.nvim_buf_get_name(bufnr), upward = true })[1] then
+            return on_dir(swift_root_dir(vim.api.nvim_buf_get_name(bufnr)))
+          end
+        end,
+      })
+      vim.lsp.enable("sourcekit")
 
       vim.diagnostic.config({
         virtual_text = {

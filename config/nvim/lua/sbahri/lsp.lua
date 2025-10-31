@@ -1,110 +1,84 @@
+-- LSP utilities and configuration
 local M = {}
 
 function M.on_attach(client, bufnr)
-  local Snacks = require("snacks")
+  local function map(keys, func, desc)
+    vim.keymap.set("n", keys, func, { buffer = bufnr, desc = "LSP: " .. desc, silent = true })
+  end
 
-  local lsp_keymap = function(keys, func, desc)
-    if desc then
-      desc = "LSP: " .. desc
-    end
-    vim.keymap.set("n", keys, func, { remap = true, buffer = bufnr, desc = desc, silent = true })
+  local hs_tiny_ca, tiny_ca = pcall(require, "tiny-code-action")
+  if hs_tiny_ca then
+    map("<D-.>", tiny_ca.code_action, "Code Action")
   end
-  if not pcall(require, "tiny-code-action") then
-    lsp_keymap("<D-.>", require("tiny-code-action").code_action, "Code Action")
+
+  map("K", vim.lsp.buf.hover, "Hover Documentation")
+  map("gd", vim.lsp.buf.definition, "Goto Definition")
+  map("gD", vim.lsp.buf.declaration, "Goto Declaration")
+  map("gi", vim.lsp.buf.implementation, "Goto Implementation")
+  map("gy", vim.lsp.buf.type_definition, "Goto Type Definition")
+  map("gK", function() return vim.lsp.buf.signature_help() end, "Signature Help")
+  map("gr", vim.lsp.buf.references, "References")
+  map("<leader>rn", vim.lsp.buf.rename, "Rename")
+  map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+  vim.keymap.set({ "n", "x" }, "<leader>cc", vim.lsp.codelens.run,
+    { buffer = bufnr, desc = "LSP: CodeLens Run", silent = true })
+
+  map("<leader>cf", function()
+    vim.lsp.buf.format({ async = true })
+  end, "Format")
+  map("<C-k>", vim.lsp.buf.signature_help, "Signature Help")
+
+  -- Toggle inlay hints if supported
+  if client.server_capabilities.inlayHintProvider then
+    map("<leader>th", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+    end, "Toggle Inlay Hints")
   end
-  lsp_keymap("K", function()
-    if client.name == "rust-analyzer" then
+
+  -- OCaml-specific keymaps
+  if client.name == "ocamllsp" then
+    map("gn", ":OCaml phrase next<cr>", "Jump to next phrase")
+    map("gN", ":OCaml phrase prev<cr>", "Jump to previous phrase")
+    map("gh", ":OCaml jump-hole next<cr>", "Jump to next hole")
+    map("gH", ":OCaml jump-hole prev<cr>", "Jump to previous hole")
+    map("<leader>m", ":OCaml jump<cr>", "Merlin jumps")
+    map("<leader>ce", ":OCaml expand-ppx<CR>", "Expand PPX")
+    map("<leader>sp", ":OCaml type-search<CR>", "Type search")
+
+    vim.keymap.set({ "n", "x" }, "<leader>cv", ":OCaml select-ast<CR>", {
+      remap = true,
+      silent = true,
+      desc = "Select AST node",
+      buffer = bufnr,
+    })
+  end
+
+  -- Rust-specific keymaps
+  if client.name == "rust-analyzer" or client.name == "rust_analyzer" then
+    map("K", function()
       vim.cmd.RustLsp({ "hover", "actions" })
-    else
-      vim.lsp.buf.hover()
-    end
-  end, "Hover Documentation")
-  lsp_keymap("<D-r>", vim.lsp.buf.rename, "Go to Definition")
-  lsp_keymap("<D-u>", vim.lsp.buf.signature_help, "Signature Help")
-  lsp_keymap("<leader>ch", function()
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { bufnr })
-  end, "Lsp toggle inlay [h]ints")
-
-  lsp_keymap("gD", Snacks.picker.lsp_definitions, "Goto Declaration")
-  lsp_keymap("gi", Snacks.picker.lsp_implementations, "Goto Implementation")
-  lsp_keymap("gr", Snacks.picker.lsp_references, "References")
-  lsp_keymap("<D-l>", Snacks.picker.lsp_workspace_symbols, "Search workspace symbols")
-
-  if client.name == "rust-analyzer" then
-    lsp_keymap("<leader>cR", function()
+    end, "Hover with actions")
+    map("<leader>cR", function()
       vim.cmd.RustLsp("codeAction")
     end, "Code action")
-    lsp_keymap("<leader>dr", function()
+    map("<leader>dr", function()
       vim.cmd.RustLsp("debuggables")
     end, "Rust Debuggables")
-  end
-
-  if client.name == "ocamllsp" then
-    lsp_keymap("gn", ":OCaml phrase next<cr>", "Jumps to next phrase")
-    lsp_keymap("gN", ":OCaml phrase prev<cr>", "Jumps to previous phrase")
-    lsp_keymap("gh", ":OCaml jump-hole next<cr>", "Jumps to next hole")
-    lsp_keymap("gH", ":OCaml jump-hole prev<cr>", "Jumps to previous hole")
-    lsp_keymap("<leader>m", ":OCaml jump<cr>", "Merlin jumps")
-    lsp_keymap("gml", ":OCaml jump let<cr>", "Jumps to the beginning of the let")
-    lsp_keymap("gmf", ":OCaml jump fun<cr>", "Jumps to the beginning of the function")
-    lsp_keymap("gmm", ":OCaml jump module<cr>", "Jumps to the beginning of the current module")
-    lsp_keymap("gms", ":OCaml jump match<cr>", "Jumps to the beginning of the current match")
-    lsp_keymap("gmb", ":OCaml jump match-next-case<cr>", "Jumps to the beginning of the next case in the current match")
-    lsp_keymap(
-      "gmc",
-      ":OCaml jump match-prev-case<cr>",
-      "Jumps to the beginning of the previous case in the current match"
-    )
-    lsp_keymap("<leader>ce", ":OCaml expand-ppx<CR>", "Expand PPX")
-    lsp_keymap("<leader>sp", ":OCaml type-search<CR>", "Show documentation")
-
-    -- selection
-    vim.keymap.set(
-      { "n", "x" },
-      "<D-l>",
-      ":OCaml type-enclosing<CR>",
-      { remap = true, silent = true, desc = "Select structure", buffer = bufnr }
-    )
-    vim.keymap.set(
-      { "n", "x" },
-      "<leader>cv",
-      ":OCaml select-ast<CR>",
-      { remap = true, silent = true, desc = "Select AST node", buffer = bufnr }
-    )
   end
 end
 
 function M.capabilities()
-  if not pcall(require, "blink.cmp") then
-    return vim.lsp.protocol.make_client_capabilities()
-  end
-  -- extend capabilities to support nvim-cmp, broadcast that to servers
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false))
-  -- disable for now, bug: https://github.com/neovim/neovim/issues/23291
+  -- Add blink.cmp capabilities if available
+  local has_blink, blink = pcall(require, "blink.cmp")
+  if has_blink then
+    capabilities = vim.tbl_deep_extend("force", capabilities, blink.get_lsp_capabilities({}, false))
+  end
+
+  -- Disable workspace/didChangeWatchedFiles due to neovim bug
   capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
-  capabilities = vim.tbl_deep_extend("force", capabilities, {
-    textDocument = {
-      completion = {
-        completionItem = {
-          resolveSupport = {
-            properties = {
-              "kind",
-              "diagnostics",
-              "isPreferred",
-              "disabled",
-              "edit",
-              "documentation",
-              "detail",
-              "additionalTextEdits",
-              "command",
-              "data",
-            },
-          },
-        },
-      },
-    },
-  })
+
+  return capabilities
 end
 
 return M

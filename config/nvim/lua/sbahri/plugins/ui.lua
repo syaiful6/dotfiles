@@ -26,6 +26,27 @@ return {
           filename_bonus = false,
         },
       },
+      notifier = {},
+    },
+    keys = {
+      {
+        "<leader>n",
+        function()
+          if Snacks.config.picker and Snacks.config.picker.enabled then
+            Snacks.picker.notifications()
+          else
+            Snacks.notifier.show_history()
+          end
+        end,
+        desc = "Notification history",
+      },
+      {
+        "<leader>un",
+        function()
+          Snacks.notifier.hide()
+        end,
+        desc = "Dismiss all notifications",
+      }
     },
     config = function(_, opts)
       require("snacks").setup(opts)
@@ -64,20 +85,16 @@ return {
         require("snacks.picker").grep({ wrap = true, live = true })
       end
 
-      -- Primary keymaps (works without macOS Cmd key)
-      vim.keymap.set("n", "<leader>ff", find_files, { desc = "Find files" })
-      vim.keymap.set("n", "<leader>fr", find_recent_files, { desc = "Find recent files" })
-      vim.keymap.set("n", "<leader>fg", live_grep, { desc = "Live grep" })
       vim.keymap.set("n", "<leader>fd", require("snacks.picker").diagnostics, { desc = "Diagnostics" })
       vim.keymap.set("n", "<leader>fb", require("snacks.picker").buffers, { desc = "Buffers" })
       vim.keymap.set("n", "<leader>gb", require("snacks.picker").git_branches, { desc = "Git branches" })
       vim.keymap.set("n", "<leader>sw", require("snacks.picker").grep_word, { desc = "Search word" })
 
-      -- macOS keymaps (if available)
       vim.keymap.set("n", "<D-p>", find_files, { desc = "Find files" })
       vim.keymap.set("n", "<D-k>", find_recent_files, { desc = "Search recent files" })
       vim.keymap.set("n", "<D-S-f>", live_grep, { desc = "Live grep" })
-      vim.keymap.set("n", "<D-m>", require("snacks.picker").diagnostics, { desc = "Diagnostics" })
+      vim.keymap.set("n", "<leader>sd", require("snacks.picker").diagnostics, { desc = "Diagnostics" })
+      vim.keymap.set("n", "<leader>sD", require("snacks.picker").diagnostics_buffer, { desc = "Buffer diagnostics" })
 
       local function open_file_under_cursor_in_picker()
         local target = vim.fn.expand "<cfile>"
@@ -185,11 +202,5 @@ return {
         desc = "Buffer Local Keymaps (which-key)"
       }
     }
-  },
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      vim.notify = require("notify")
-    end,
   },
 }
