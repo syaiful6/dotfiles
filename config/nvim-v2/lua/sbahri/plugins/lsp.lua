@@ -42,10 +42,6 @@ return {
       local capabilities = Lsp.capabilities()
       local on_attach = Lsp.on_attach
 
-      vim.lsp.enable("ocamllsp", false)
-      vim.lsp.enable("rust_analyzer", false)
-      vim.lsp.enable("koka", false)
-
       vim.lsp.config("lua_ls", {
         cmd = { "lua-language-server" },
         root_markers = { ".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", "selene.toml", "selene.yml", ".git" },
