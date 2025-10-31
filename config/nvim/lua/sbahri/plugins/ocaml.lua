@@ -4,6 +4,7 @@ return {
     ft = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocamllex", "opam" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
+      "mfussenegger/nvim-dap",
     },
     opts = function()
       local Lsp = require("sbahri.lsp")
@@ -18,10 +19,57 @@ return {
     config = function(_, opts)
       vim.g.ocamlnvim = vim.tbl_deep_extend("keep", vim.g.ocamlnvim or {}, opts or {})
 
-      local ok, language_processors = pcall(require, "sbahri.blink.language_processors")
-      if ok then
-        local ocaml_processor = require("sbahri.blink.processors.ocaml")
-        language_processors.register({ "ocaml", "ocaml.menhir", "ocaml.interface", "ocamllex" }, ocaml_processor)
+      local dap_ok, dap = pcall(require, "dap")
+      if dap_ok then
+        dap.adapters.ocamlearlybird = {
+          type = "executable",
+          command = "ocamlearlybird",
+          args = { "debug" },
+        }
+
+        dap.configurations.ocaml = {
+          {
+            name = "OCaml Debug",
+            type = "ocamlearlybird",
+            request = "launch",
+            program = function()
+              return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            end,
+            stopOnEntry = false,
+            arguments = function()
+              local args_str = vim.fn.input("Arguments: ")
+              if args_str == "" then
+                return {}
+              end
+              return vim.split(args_str, " ")
+            end,
+            cwd = "${workspaceFolder}",
+          },
+          {
+            name = "OCaml Debug (with arguments)",
+            type = "ocamlearlybird",
+            request = "launch",
+            program = function()
+              return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            end,
+            stopOnEntry = false,
+            arguments = function()
+              local args_str = vim.fn.input("Arguments: ")
+              if args_str == "" then
+                return {}
+              end
+              return vim.split(args_str, " ")
+            end,
+            cwd = "${workspaceFolder}",
+            env = function()
+              local variables = {}
+              for k, v in pairs(vim.fn.environ()) do
+                table.insert(variables, string.format("%s=%s", k, v))
+              end
+              return variables
+            end,
+          },
+        }
       end
     end,
   },
