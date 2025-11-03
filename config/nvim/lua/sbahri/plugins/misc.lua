@@ -32,12 +32,12 @@ return {
         mc.matchSkipCursor(-1)
       end, { desc = "Skip previous match" })
 
-      vim.keymap.set("n", "<D-d>", "viw", { desc = "Select current word" })
+      vim.keymap.set("n", "<C-d>", "viw", { desc = "Select current word" })
 
-      vim.keymap.set("x", "<D-d>", function()
+      vim.keymap.set("x", "<C-d>", function()
         mc.addCursor("*")
       end, { desc = "Add cursor on next occurrence" })
-      vim.keymap.set("i", "<D-C-d>", function()
+      vim.keymap.set("x", "<C-A-d>", function()
         mc.skipCursor("*")
       end, { desc = "Skip current occurrence" })
 

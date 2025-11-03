@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "ocaml": {
+      "type": "stdio",
+      "command": "ocaml-mcp-server",
+      "args": [],
+      "env": {}
+    }
+  }
+}

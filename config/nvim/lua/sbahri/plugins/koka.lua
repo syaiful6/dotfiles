@@ -1,7 +1,6 @@
 return {
   {
     "syaiful6/koka.nvim",
-    ft = { "koka" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },

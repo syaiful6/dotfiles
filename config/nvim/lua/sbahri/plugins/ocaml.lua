@@ -1,7 +1,6 @@
 return {
   {
     "syaiful6/ocaml.nvim",
-    ft = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocamllex", "opam" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "mfussenegger/nvim-dap",
