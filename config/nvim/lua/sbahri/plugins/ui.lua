@@ -9,20 +9,20 @@ return {
     opts = {
       bigfile = {
         enabled = true,
-        max_size = 1 * 1024 * 1024, -- 1MB for Raspberry Pi
+        max_size = 2 * 1024 * 1024,
       },
-      -- Disable image for performance on Raspberry Pi
+      indent = { enabled = true },
       image = { enabled = true },
       terminal = {},
       picker = {
-        prompt = "> ",
+        prompt = "🍿 ",
         layout = { preset = "telescope" },
         hidden = true,
         file = true,
         current = true,
         matcher = {
           fuzzy = true,
-          frecency = false, -- Disable for performance
+          frecency = true,
           filename_bonus = false,
         },
       },
@@ -53,7 +53,7 @@ return {
 
       local function find_files()
         require("snacks.picker").files({
-          prompt = "⚡️ ",
+          prompt = "🍿 ",
           wrap = true,
           find_command = { "rg", "--files", "--no-require-git" },
         })
@@ -63,7 +63,7 @@ return {
         require("snacks.picker").smart({
           multi = { "files" },
           format = "file",
-          prompt = "⚡️ ",
+          prompt = "🍿 ",
           wrap = true,
           matcher = {
             fuzzy = true,
@@ -101,7 +101,7 @@ return {
         vim.api.nvim_command "wincmd k"
 
         require("snacks.picker").files {
-          prompt = "🍪 ",
+          prompt = "🍿 ",
           default_text = target,
           wrap = true,
           find_command = { "rg", "--files", "--no-require-git" },
@@ -149,7 +149,6 @@ return {
       require("bufferline").setup(opts)
     end,
   },
-  -- outline symbols
   {
     "hedyhli/outline.nvim",
     lazy = true,
