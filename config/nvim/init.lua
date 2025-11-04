@@ -23,6 +23,10 @@ require("lazy").setup({
   change_detection = {
     notify = false,
   },
+  dev = {
+    path = "~/Developer/prj/nvim",
+    fallback = true, -- fallback since on other devices I may not have my local plugins
+  },
   performance = {
     rtp = {
       -- Disable some rtp plugins for performance

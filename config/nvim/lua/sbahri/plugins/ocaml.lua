@@ -1,6 +1,7 @@
 return {
   {
     "syaiful6/ocaml.nvim",
+    dev = true,
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "mfussenegger/nvim-dap",

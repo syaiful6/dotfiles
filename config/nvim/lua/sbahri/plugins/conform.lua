@@ -32,6 +32,8 @@ return {
         yaml = { "prettier" },
         markdown = { "prettier" },
         php = { "php_cs_fixer" },
+        haskell = { "fourmolu" },
+        cabal = { "cabal_fmt" },
       },
       format_on_save = function(bufnr)
         -- Disable with a global or buffer-local variable
