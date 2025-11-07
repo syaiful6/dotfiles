@@ -23,14 +23,14 @@ function M.on_attach(client, bufnr)
   vim.keymap.set({ "n", "x" }, "<leader>cc", vim.lsp.codelens.run,
     { buffer = bufnr, desc = "LSP: CodeLens Run", silent = true })
 
-  map("<leader>cf", function()
+  map("<leader>cF", function()
     vim.lsp.buf.format({ async = true })
   end, "Format")
   map("<C-k>", vim.lsp.buf.signature_help, "Signature Help")
 
   -- Toggle inlay hints if supported
   if client.server_capabilities.inlayHintProvider then
-    map("<leader>th", function()
+    map("<leader>ci", function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
     end, "Toggle Inlay Hints")
   end
@@ -41,9 +41,10 @@ function M.on_attach(client, bufnr)
     map("gN", ":OCaml phrase prev<cr>", "Jump to previous phrase")
     map("gh", ":OCaml jump-hole next<cr>", "Jump to next hole")
     map("gH", ":OCaml jump-hole prev<cr>", "Jump to previous hole")
-    map("<leader>m", ":OCaml jump<cr>", "Merlin jumps")
-    map("<leader>ce", ":OCaml expand-ppx<CR>", "Expand PPX")
-    map("<leader>sp", ":OCaml type-search<CR>", "Type search")
+    map("<localleader>m", ":OCaml jump<cr>", "Merlin jumps")
+    map("<localleader>e", ":OCaml expand-ppx<CR>", "Expand PPX")
+    map("<localleader>t", ":OCaml type-search<CR>", "Type search")
+    map("<localleader>c", ":OCaml type-enclosing<CR>", "Type enclosing")
 
     vim.keymap.set({ "n", "x" }, "<leader>cv", ":OCaml select-ast<CR>", {
       remap = true,
