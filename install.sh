@@ -155,34 +155,6 @@ should_exclude() {
   return 1
 }
 
-# Change to dotfiles directory
-cd "$DOTFILES_DIR" || exit 1
-
-# Find all files and create symlinks
-while IFS= read -r -d '' file; do
-  # Remove leading ./ and any remaining leading /
-  file="${file#./}"
-  file="${file#/}"
-
-  # Skip if should be excluded
-  if should_exclude "$file"; then
-    continue
-  fi
-
-  # Create target path in home directory (add dot prefix)
-  target="$HOME/.$file"
-  source="$DOTFILES_DIR/$file"
-
-  create_symlink "$source" "$target"
-done < <(find . -type f -not -path './.git/*' -print0)
-
-# Create sbdot config directory and symlink packages
-mkdir -p "$HOME/.config/sbdot"
-if [[ ! -e "$HOME/.config/sbdot/packages" ]]; then
-  ln -s "$DOTFILES_DIR/packages" "$HOME/.config/sbdot/packages"
-  echo -e "${GREEN}Linked: ~/.config/sbdot/packages -> $DOTFILES_DIR/packages${NC}"
-fi
-
 # Function to install oh-my-zsh
 install_oh_my_zsh() {
   if [[ -d "$HOME/.oh-my-zsh" ]]; then
@@ -241,11 +213,39 @@ install_oh_my_zsh() {
   echo -e "${YELLOW}💡 You may want to change your default shell: chsh -s \$(which zsh)${NC}"
 }
 
-# Setup gitconfig
-setup_gitconfig
-
 # Install oh-my-zsh
 install_oh_my_zsh
+
+# Change to dotfiles directory
+cd "$DOTFILES_DIR" || exit 1
+
+# Find all files and create symlinks
+while IFS= read -r -d '' file; do
+  # Remove leading ./ and any remaining leading /
+  file="${file#./}"
+  file="${file#/}"
+
+  # Skip if should be excluded
+  if should_exclude "$file"; then
+    continue
+  fi
+
+  # Create target path in home directory (add dot prefix)
+  target="$HOME/.$file"
+  source="$DOTFILES_DIR/$file"
+
+  create_symlink "$source" "$target"
+done < <(find . -type f -not -path './.git/*' -print0)
+
+# Create sbdot config directory and symlink packages
+mkdir -p "$HOME/.config/sbdot"
+if [[ ! -e "$HOME/.config/sbdot/packages" ]]; then
+  ln -s "$DOTFILES_DIR/packages" "$HOME/.config/sbdot/packages"
+  echo -e "${GREEN}Linked: ~/.config/sbdot/packages -> $DOTFILES_DIR/packages${NC}"
+fi
+
+# Setup gitconfig
+setup_gitconfig
 
 echo -e "${GREEN}Dotfiles installation complete!${NC}"
 
