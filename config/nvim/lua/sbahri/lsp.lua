@@ -41,9 +41,11 @@ function M.on_attach(client, bufnr)
     map("gN", ":OCaml phrase prev<cr>", "Jump to previous phrase")
     map("gh", ":OCaml jump-hole next<cr>", "Jump to next hole")
     map("gH", ":OCaml jump-hole prev<cr>", "Jump to previous hole")
-    map("<leader>m", ":OCaml jump<cr>", "Merlin jumps")
-    map("<leader>ce", ":OCaml expand-ppx<CR>", "Expand PPX")
-    map("<leader>sp", ":OCaml type-search<CR>", "Type search")
+    map("<localleader>j", ":OCaml jump<cr>", "Merlin jumps")
+    map("<localleader>e", ":OCaml expand-ppx<CR>", "Expand PPX")
+    map("<localleader>s", ":OCaml type-search<CR>", "Type search")
+    map("<localleader>c", ":OCaml construct<cr>", "Fill typed holes with suggested constructions")
+    map("<localleader>d", ":OCaml destruct<cr>", "Generate exhaustive pattern matching")
 
     vim.keymap.set({ "n", "x" }, "<leader>cv", ":OCaml select-ast<CR>", {
       remap = true,

@@ -1,4 +1,3 @@
--- Conform.nvim - formatter plugin
 return {
   {
     "stevearc/conform.nvim",
@@ -28,6 +27,7 @@ return {
         sh = { "shfmt" },
         html = { "prettier" },
         css = { "prettier" },
+        scss = { "prettier" },
         json = { "prettier" },
         yaml = { "prettier" },
         markdown = { "prettier" },
