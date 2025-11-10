@@ -185,7 +185,7 @@ return {
         filetypes = { "python" },
         on_attach = on_attach,
         root_dir = function(bufnr, on_dir)
-          if Python.get_venv_tool("pyrefly") ~= nil then
+          if Python.get_venv_tool("pyrefly") ~= nil or vim.fn.executable("pyrefly") == 1 then
             return on_dir(python_root_dir(vim.api.nvim_buf_get_name(bufnr)))
           end
         end,
@@ -200,8 +200,7 @@ return {
       vim.lsp.enable("pyrefly")
 
       vim.lsp.config("basedpyright", {
-        enable = vim.fn.executable("pyrefly") == 0,
-        cmd = { "basedpyright-langserver", "--stdio" },
+        cmd = { Python.get_venv_tool("basedpyright-langserver") or "basedpyright-langserver", "--stdio" },
         capabilities = capabilities,
         filetypes = { "python" },
         on_attach = Lsp.on_attach,
@@ -216,8 +215,10 @@ return {
           },
         },
         root_dir = function(bufnr, on_dir)
-          if Python.get_venv_tool("pyrefly") == nil then
-            return on_dir(python_root_dir(vim.api.nvim_buf_get_name(bufnr)))
+          if (Python.get_venv_tool("pyrefly") == nil or vim.fn.executable("pyrefly") ~= 1)
+              and (Python.get_venv_tool("basedpyright-langserver") ~= nil
+                or vim.fn.executable("basedpyright-langserver") == 1) then
+            on_dir(python_root_dir(vim.api.nvim_buf_get_name(bufnr)))
           end
         end,
       })

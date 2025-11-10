@@ -117,11 +117,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-7 = 'workspace 7'
     alt-8 = 'workspace 8'
     alt-9 = 'workspace 9'
-    alt-b = 'workspace B'
-    alt-t = 'workspace T'
-    alt-s = 'workspace S'
-    alt-o = 'workspace O'
-    alt-z = 'workspace Z'
+    alt-0 = 'workspace 10'
 
     alt-shift-1 = 'move-node-to-workspace 1'
     alt-shift-2 = 'move-node-to-workspace 2'
@@ -132,11 +128,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-shift-7 = 'move-node-to-workspace 7'
     alt-shift-8 = 'move-node-to-workspace 8'
     alt-shift-9 = 'move-node-to-workspace 9'
-    alt-shift-b = 'move-node-to-workspace B'
-    alt-shift-t = 'move-node-to-workspace T'
-    alt-shift-s = 'move-node-to-workspace S'
-    alt-shift-o = 'move-node-to-workspace O'
-    alt-shift-z = 'move-node-to-workspace Z'
+
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
@@ -187,16 +179,12 @@ automatically-unhide-macos-hidden-apps = false
 # send application to specific workspace on launch
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = 'move-node-to-workspace S'
+run = 'move-node-to-workspace 3'
 
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
-run = 'move-node-to-workspace B'
-
-[[on-window-detected]]
-if.app-id = 'com.mitchellh.ghostty'
-run = 'move-node-to-workspace T'
+run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
-run = 'move-node-to-workspace Z'
+run = 'move-node-to-workspace 5'
