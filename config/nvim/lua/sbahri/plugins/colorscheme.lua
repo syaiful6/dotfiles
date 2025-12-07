@@ -1,13 +1,15 @@
 -- Colorscheme configuration
 return {
   {
-    "folke/tokyonight.nvim",
+    "neanias/everforest-nvim",
     lazy = false,
     priority = 1000,
-    opts = {},
+    opts = {
+      background = "soft"
+    },
     config = function(_, opts)
-      require("tokyonight").setup(opts)
-      vim.cmd.colorscheme("tokyonight")
+      require("everforest").setup(opts)
+      vim.cmd.colorscheme("everforest")
     end,
   },
 }
