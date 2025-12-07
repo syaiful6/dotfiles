@@ -25,13 +25,13 @@ return {
     event = "VeryLazy",
     opts = {
       mappings = {
-        add = "ys",            -- Add surrounding in Normal and Visual modes
-        delete = "ds",         -- Delete surrounding
-        find = "",             -- Find surrounding (to the right)
-        find_left = "",        -- Find surrounding (to the left)
-        highlight = "",        -- Highlight surrounding
-        replace = "cs",        -- Replace surrounding
-        update_n_lines = "",   -- Update `n_lines`
+        add = "ys",          -- Add surrounding in Normal and Visual modes
+        delete = "ds",       -- Delete surrounding
+        find = "",           -- Find surrounding (to the right)
+        find_left = "",      -- Find surrounding (to the left)
+        highlight = "",      -- Highlight surrounding
+        replace = "cs",      -- Replace surrounding
+        update_n_lines = "", -- Update `n_lines`
       },
     },
   },
@@ -39,6 +39,11 @@ return {
     "folke/ts-comments.nvim",
     event = "VeryLazy",
     opts = {},
+  },
+  {
+    "esmuellert/vscode-diff.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    cmd = "CodeDiff",
   },
   {
     "smoka7/hop.nvim",
