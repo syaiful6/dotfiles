@@ -67,6 +67,11 @@ end
 M.prospector = function()
   local fname = vim.api.nvim_buf_get_name(0)
   local path = prospector_root_dir(fname)
+
+  if path == nil then
+    return {}
+  end
+
   local envs = { PYTHONWARNING = "ignore", ["DJANGO_SETTINGS_MODULE"] = "settings" }
   local current_python_path = vim.fn.getenv("PYTHONPATH")
   -- Convert userdata to string if needed
