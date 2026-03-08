@@ -35,7 +35,15 @@ return {
   },
   {
     "folke/sidekick.nvim",
-    opts = {},
+    opts = {
+      cli = {
+        tools = {
+          pi = {
+            cmd = { "pi" },
+          }
+        }
+      }
+    },
     keys = {
       {
         "<tab>",
