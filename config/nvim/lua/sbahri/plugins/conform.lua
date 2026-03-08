@@ -7,7 +7,11 @@ return {
       {
         "<leader>cf",
         function()
-          require("conform").format({ async = true, lsp_fallback = true })
+          local bufnr = vim.api.nvim_get_current_buf()
+          require("conform").format({
+            async = true,
+            lsp_fallback = #require("conform").list_formatters(bufnr) == 0,
+          })
         end,
         mode = "",
         desc = "Format buffer",
@@ -42,7 +46,7 @@ return {
         end
         return {
           timeout_ms = 500,
-          lsp_fallback = true,
+          lsp_fallback = #require("conform").list_formatters(bufnr) == 0,
         }
       end,
       formatters = {
