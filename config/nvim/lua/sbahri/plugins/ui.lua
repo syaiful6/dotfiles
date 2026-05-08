@@ -127,13 +127,6 @@ return {
     end,
   },
   {
-    "norcalli/nvim-colorizer.lua",
-    opts = {
-      "css",
-      "scss",
-    }
-  },
-  {
     "akinsho/bufferline.nvim",
     version = "*",
     dependencies = {
