@@ -37,12 +37,6 @@ keymap.set("v", ">", ">gv", { desc = "Indent right" })
 -- Paste without yanking
 keymap.set("x", "<leader>p", [["_dP]], { desc = "Paste without yanking" })
 
--- Quickfix navigation
-keymap.set("n", "<leader>xq", "<cmd>copen<CR>", { desc = "Open quickfix list" })
-keymap.set("n", "<leader>xQ", "<cmd>cclose<CR>", { desc = "Close quickfix list" })
-keymap.set("n", "[q", "<cmd>cprev<CR>", { desc = "Previous quickfix" })
-keymap.set("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix" })
-
 -- Diagnostic keymaps
 local diagnostic_goto = function(next, severity)
   return function()

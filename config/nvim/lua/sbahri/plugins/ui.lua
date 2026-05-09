@@ -13,7 +13,10 @@ return {
       },
       indent = { enabled = true },
       image = { enabled = true },
-      terminal = {},
+      terminal = {
+        enabled = true,
+        shell = { "/bin/zsh", "-i" },
+      },
       picker = {
         prompt = "🍿 ",
         layout = { preset = "telescope" },
@@ -30,101 +33,41 @@ return {
     },
     keys = {
       {
-        "<leader>n",
+        "<leader>.",
         function()
-          if Snacks.config.picker and Snacks.config.picker.enabled then
-            Snacks.picker.notifications()
-          else
-            Snacks.notifier.show_history()
-          end
+          Snacks.scratch()
         end,
-        desc = "Notification history",
+        desc = "Toggle Scratch buffer"
       },
       {
-        "<leader>un",
+        "<leader>S",
         function()
-          Snacks.notifier.hide()
+          Snacks.scratch.select()
         end,
-        desc = "Dismiss all notifications",
+        desc = "Select Scratch buffer"
+      },
+      {
+        "fb",
+        function()
+          Snacks.picker.buffers()
+        end,
+        desc = "Pick buffer"
+      },
+      {
+        "<leader>sh",
+        function()
+          vim.cmd("messages")
+        end,
+        desc = "Message history"
+      },
+      {
+        "<leader>tt",
+        function()
+          Snacks.terminal.toggle()
+        end,
+        desc = "Toggle terminal"
       }
     },
-    config = function(_, opts)
-      require("snacks").setup(opts)
-
-      local function find_files()
-        require("snacks.picker").files({
-          prompt = "🍿 ",
-          wrap = true,
-          find_command = { "rg", "--files", "--no-require-git" },
-        })
-      end
-
-      local function find_recent_files()
-        require("snacks.picker").smart({
-          multi = { "files" },
-          format = "file",
-          prompt = "🍿 ",
-          wrap = true,
-          matcher = {
-            fuzzy = true,
-            filename_bonus = false,
-            history_bonus = false,
-            sort_empty = true,
-            frecency = false,
-          },
-          keys = {
-            "<leader>q",
-            require("snacks.picker").qflist,
-            desc = "Add to quickfix list",
-          },
-          filter = { cwd = true },
-        })
-      end
-
-      local function live_grep()
-        require("snacks.picker").grep({ wrap = true, live = true })
-      end
-
-      vim.keymap.set("n", "<leader>fd", require("snacks.picker").diagnostics, { desc = "Diagnostics" })
-      vim.keymap.set("n", "<leader>fb", require("snacks.picker").buffers, { desc = "Buffers" })
-      vim.keymap.set("n", "<leader>gb", require("snacks.picker").git_branches, { desc = "Git branches" })
-      vim.keymap.set("n", "<leader>sw", require("snacks.picker").grep_word, { desc = "Search word" })
-
-      vim.keymap.set("n", "<D-p>", find_files, { desc = "Find files" })
-      vim.keymap.set("n", "<D-k>", find_recent_files, { desc = "Search recent files" })
-      vim.keymap.set("n", "<D-S-f>", live_grep, { desc = "Live grep" })
-      vim.keymap.set("n", "<leader>sd", require("snacks.picker").diagnostics, { desc = "Diagnostics" })
-      vim.keymap.set("n", "<leader>sD", require("snacks.picker").diagnostics_buffer, { desc = "Buffer diagnostics" })
-
-      local function open_file_under_cursor_in_picker()
-        local target = vim.fn.expand "<cfile>"
-        vim.api.nvim_command "wincmd k"
-
-        require("snacks.picker").files {
-          prompt = "🍿 ",
-          default_text = target,
-          wrap = true,
-          find_command = { "rg", "--files", "--no-require-git" },
-        }
-      end
-
-      vim.keymap.set("n", "gs", open_file_under_cursor_in_picker, { desc = "Search file name under cursor" })
-
-      vim.keymap.set("n", "<D-f>", function()
-        require("snacks.picker").lines {
-          layout = {
-            preset = "select",
-          },
-        }
-      end, { desc = "Fuzzily search in current buffer" })
-
-      vim.keymap.set("n", "<D-s-;>", require("snacks.picker").commands, { desc = "Search commands" })
-      vim.keymap.set("n", "<leader>sh", require("snacks.picker").help, { desc = "Search help" })
-
-      vim.keymap.set({ "n", "x" }, "<leader>gg", function()
-        require("snacks.gitbrowse").open()
-      end, { desc = "Open git link in the browser", silent = true })
-    end,
   },
   {
     "akinsho/bufferline.nvim",

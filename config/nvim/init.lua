@@ -1,6 +1,7 @@
 -- Load core configurations first
 require("sbahri.options")
 require("sbahri.keymaps")
+require("sbahri.ui2").setup()
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
