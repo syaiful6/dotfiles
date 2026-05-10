@@ -54,14 +54,14 @@ return {
         desc = "Pick buffer"
       },
       {
-        "<leader>sh",
+        "<leader>n",
         function()
           vim.cmd("messages")
         end,
         desc = "Message history"
       },
       {
-        "<leader>tt",
+        "<C-`>",
         function()
           Snacks.terminal.toggle()
         end,
