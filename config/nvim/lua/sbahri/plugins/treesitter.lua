@@ -53,7 +53,29 @@ return {
       },
     },
     config = function(_, opts)
-      require("nvim-treesitter").setup(opts)
+      local ts = require("nvim-treesitter")
+      ts.setup(opts)
+
+      -- parsers we only want on disk once we actually open a matching
+      -- file, rather than installed eagerly on every machine
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "gotmpl", "htmldjango" },
+        callback = function(args)
+          local ft = vim.bo[args.buf].filetype
+          if vim.list_contains(ts.get_installed("parsers"), ft) then
+            pcall(vim.treesitter.start, args.buf, ft)
+            return
+          end
+          ts.install({ ft }):await(function(err)
+            if not err then
+              vim.schedule(function()
+                pcall(vim.treesitter.start, args.buf, ft)
+              end)
+            end
+          end)
+        end,
+      })
+
       vim.api.nvim_create_autocmd("FileType", {
         callback = function()
           pcall(vim.treesitter.start)

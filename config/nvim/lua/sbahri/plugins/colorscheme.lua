@@ -1,15 +1,13 @@
 -- Colorscheme configuration
 return {
   {
-    "neanias/everforest-nvim",
+    "catppuccin/nvim",
+    dependencies = { "bjarneo/aether.nvim" },
     lazy = false,
     priority = 1000,
-    opts = {
-      background = "soft"
-    },
     config = function(_, opts)
-      require("everforest").setup(opts)
-      vim.cmd.colorscheme("everforest")
+      -- require("hackerman").setup(opts)
+      vim.cmd.colorscheme("catppuccin-nvim")
     end,
   },
 }

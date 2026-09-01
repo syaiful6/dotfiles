@@ -3,6 +3,35 @@ require("sbahri.options")
 require("sbahri.keymaps")
 require("sbahri.ui2").setup()
 
+-- Add file type
+vim.filetype.add({
+  extension = {
+    nomad = 'hcl',
+  }
+})
+-- html/template filetype: templates/*.html is Django by default, but a
+-- Go project (go.mod present, no manage.py) using the same convention
+-- should be treated as a Go template instead.
+vim.filetype.add({
+  extension = {
+    gotmpl = 'gotmpl',
+    tmpl = 'gotmpl',
+  },
+  pattern = {
+    ['.*/templates/.*%.html'] = function(path)
+      if vim.fs.root(path, 'manage.py') then
+        return 'htmldjango'
+      end
+      if vim.fs.root(path, 'go.mod') then
+        return 'gotmpl'
+      end
+      return 'htmldjango'
+    end,
+    -- Hugo's default template directory; unambiguously Go templates.
+    ['.*/layouts/.*%.html'] = 'gotmpl',
+  }
+})
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then

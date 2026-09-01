@@ -27,6 +27,7 @@ return {
         go = { "gofmt", "goimports" },
         rust = { "rustfmt" },
         ocaml = { "ocamlformat" },
+        ["ocaml.mlx"] = { "ocamlxformat" },
         bash = { "shfmt" },
         sh = { "shfmt" },
         html = { "prettier" },
@@ -52,6 +53,14 @@ return {
       formatters = {
         stylua = {
           prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
+        },
+        ocamlxformat = {
+          meta = {
+            url = "https://github.com/ocaml-mlx/ocamlformat-mlx",
+            description = "OCaml code formatter",
+          },
+          command = "ocamlformat-mlx",
+          args = { "--enable-outside-detected-project", "--impl", "--name", "$FILENAME", "-" },
         },
         shfmt = {
           prepend_args = { "-i", "2" },

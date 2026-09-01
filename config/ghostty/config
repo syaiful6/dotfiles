@@ -1,7 +1,18 @@
 # Dynamic theme colors
-config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
+config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"
 
 font-family = "JetBrainsMono Nerd Font Mono"
-font-size   = 14
+font-size   = 16
 macos-option-as-alt = true
 keybind = shift+enter=text:\n
+shell-integration = detect
+shell-integration-features = ssh-terminfo,ssh-env
+
+# Slowdown mouse scrolling
+mouse-scroll-multiplier = 0.95
+
+# Fix general slowness on hyprland (https://github.com/ghostty-org/ghostty/discussions/3224)
+async-backend = epoll
+
+# Legacy encoding sends Alt+Shift+Enter the same as Alt+Enter; send CSI-u so tmux can match M-S-Enter.
+keybind = alt+shift+enter=csi:13;4u
