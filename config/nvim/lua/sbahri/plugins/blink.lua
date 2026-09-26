@@ -32,12 +32,6 @@ return {
           lsp = {
             module = "sbahri.blink.lsp_source",
           },
-          copilot = {
-            name = "copilot",
-            module = "blink-cmp-copilot",
-            score_offset = 100,
-            async = true,
-          },
         },
       },
       completion = {
@@ -71,20 +65,6 @@ return {
         ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<C-e>"] = { "hide" },
         ["<CR>"] = { "accept", "fallback" },
-        ["<Tab>"] = {
-          function(cmp)
-            if cmp.snippet_active() then
-              return cmp.accept()
-            else
-              return cmp.select_and_accept()
-            end
-          end,
-          "snippet_forward",
-          function()
-            return require("sidekick").nes_jump_or_apply()
-          end,
-          "fallback",
-        },
         ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
         ["<Up>"] = { "select_prev", "fallback" },
         ["<Down>"] = { "select_next", "fallback" },
