@@ -1,3 +1,14 @@
+local Biome = require("sbahri.biome")
+
+local function biome_or(fallback)
+  return function(bufnr)
+    if Biome.configured(vim.api.nvim_buf_get_name(bufnr)) then
+      return { "biome" }
+    end
+    return { fallback }
+  end
+end
+
 return {
   {
     "stevearc/conform.nvim",
@@ -20,10 +31,10 @@ return {
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
-        javascript = { "eslint_d" },
-        typescript = { "eslint_d" },
-        javascriptreact = { "eslint_d" },
-        typescriptreact = { "eslint_d" },
+        javascript = biome_or("eslint_d"),
+        typescript = biome_or("eslint_d"),
+        javascriptreact = biome_or("eslint_d"),
+        typescriptreact = biome_or("eslint_d"),
         go = { "gofmt", "goimports" },
         rust = { "rustfmt" },
         ocaml = { "ocamlformat" },
@@ -31,9 +42,10 @@ return {
         bash = { "shfmt" },
         sh = { "shfmt" },
         html = { "prettier" },
-        css = { "prettier" },
+        css = biome_or("prettier"),
         scss = { "prettier" },
-        json = { "prettier" },
+        json = biome_or("prettier"),
+        jsonc = biome_or("prettier"),
         yaml = { "prettier" },
         markdown = { "prettier" },
         php = { "php_cs_fixer" },
@@ -51,6 +63,15 @@ return {
         }
       end,
       formatters = {
+        biome = {
+          command = function(_, ctx)
+            return Biome.command(ctx.filename)
+          end,
+          cwd = function(_, ctx)
+            return Biome.root(ctx.filename)
+          end,
+          require_cwd = true,
+        },
         stylua = {
           prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
         },

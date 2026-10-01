@@ -1,3 +1,5 @@
+local Biome = require("sbahri.biome")
+
 -- nvim-lint configuration
 return {
   {
@@ -7,10 +9,10 @@ return {
       linters_by_ft = {
         bash = { "shellcheck" },
         sh = { "shellcheck" },
-        javascript = { "eslint" },
-        typescript = { "eslint" },
-        javascriptreact = { "eslint" },
-        typescriptreact = { "eslint" },
+        javascript = { "biomejs", "eslint" },
+        typescript = { "biomejs", "eslint" },
+        javascriptreact = { "biomejs", "eslint" },
+        typescriptreact = { "biomejs", "eslint" },
         lua = { "luacheck" },
         markdown = { "markdownlint" },
         yaml = { "yamllint" },
@@ -18,6 +20,19 @@ return {
         python = { "prospector" },
       },
       linters = {
+        biomejs = {
+          cmd = function()
+            return Biome.command(vim.api.nvim_buf_get_name(0))
+          end,
+          condition = function(ctx)
+            return Biome.configured(ctx.filename)
+          end,
+        },
+        eslint = {
+          condition = function(ctx)
+            return not Biome.configured(ctx.filename)
+          end,
+        },
         prospector = require("sbahri.python").prospector,
       },
     },
@@ -78,7 +93,7 @@ return {
         end, names)
 
         if #names > 0 then
-          lint.try_lint(names)
+          lint.try_lint(names, { cwd = ctx.dirname })
         end
       end
 
