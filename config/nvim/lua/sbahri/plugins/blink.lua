@@ -27,7 +27,7 @@ return {
         preset = "luasnip",
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "copilot" },
+        default = { "lsp", "path", "snippets", "buffer" },
         providers = {
           lsp = {
             module = "sbahri.blink.lsp_source",
